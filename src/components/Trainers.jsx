@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { fetchDojoData } from '../supabase';
 
 export default function Trainers() {
-  const [senseiPhoto] = useState(() => {
+  const [senseiPhoto, setSenseiPhoto] = useState(() => {
     return localStorage.getItem('dojo_sensei_photo') || 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=800';
   });
+
+  useEffect(() => {
+    const fetchSenseiPhoto = async () => {
+      const data = await fetchDojoData('sensei_photo');
+      if (data && typeof data === 'string') {
+        setSenseiPhoto(data);
+        localStorage.setItem('dojo_sensei_photo', data);
+      }
+    };
+    fetchSenseiPhoto();
+  }, []);
 
   const trainers = [
     { name: 'MAHESH SENSEI', role: '', stats: '4th Dan Black Belt', image: senseiPhoto }

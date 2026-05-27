@@ -21,6 +21,7 @@ import {
   Save,
   Loader2
 } from 'lucide-react';
+import { fetchDojoData, saveDojoData } from '../supabase';
 
 const defaultItems = [];
 
@@ -264,6 +265,22 @@ export default function Gallery() {
   // Initialize gallery list from IndexedDB
   useEffect(() => {
     const loadMedia = async () => {
+      const cloudData = await fetchDojoData('gallery');
+      if (cloudData) {
+        try {
+          const customItems = Array.isArray(cloudData) ? cloudData : Object.values(cloudData);
+          const sanitizedItems = customItems.filter(item => item && item.id && !item.id.startsWith('default-')).map(item => ({
+            ...item,
+            type: (item.type === 'video' || item.type === 'photo') ? item.type : 'photo'
+          }));
+          setMediaList([...defaultItems, ...sanitizedItems]);
+          await saveGalleryMedia(sanitizedItems);
+          return;
+        } catch (err) {
+          console.warn('Supabase parse failed, falling back to IndexedDB:', err);
+        }
+      }
+
       try {
         const savedData = await getGalleryMedia();
         if (savedData) {
@@ -312,9 +329,13 @@ export default function Gallery() {
     try {
       const customItems = newList.filter(item => !item.id.startsWith('default-'));
       await saveGalleryMedia(customItems);
+
+      // Save to Supabase
+      await saveDojoData('gallery', customItems);
+
       setIsSaved(true);
     } catch (e) {
-      console.error('Failed to save to IndexedDB:', e);
+      console.error('Failed to save to database:', e);
       setMediaList(previousList);
       throw e;
     } finally {

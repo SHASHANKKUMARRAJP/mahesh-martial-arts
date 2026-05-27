@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Award, Shield, Calendar, Zap, Flame, BookOpen, Target, Check, Camera, Upload, X, Lock, Unlock, Loader2, AlertCircle } from 'lucide-react';
+import { fetchDojoData, saveDojoData } from '../supabase';
 
 export default function SenseiPage() {
   const [senseiPhoto, setSenseiPhoto] = useState(() => {
@@ -36,6 +37,15 @@ export default function SenseiPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const fetchSenseiPhoto = async () => {
+      const data = await fetchDojoData('sensei_photo');
+      if (data && typeof data === 'string') {
+        setSenseiPhoto(data);
+        localStorage.setItem('dojo_sensei_photo', data);
+      }
+    };
+    fetchSenseiPhoto();
   }, []);
 
   const getAdminCredentials = () => {
@@ -165,7 +175,7 @@ export default function SenseiPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSavePhoto = (e) => {
+  const handleSavePhoto = async (e) => {
     e.preventDefault();
     setFileError('');
 
@@ -186,6 +196,9 @@ export default function SenseiPage() {
 
     try {
       localStorage.setItem('dojo_sensei_photo', finalSrc);
+
+      await saveDojoData('sensei_photo', finalSrc);
+
       setSenseiPhoto(finalSrc);
       setSaveSuccess(true);
       setTimeout(() => {
@@ -196,19 +209,28 @@ export default function SenseiPage() {
         setFilePreview('');
       }, 1500);
     } catch (err) {
-      setFileError('Failed to save to local storage: image may be too large.');
+      setFileError(err.message || 'Failed to save to database: image may be too large.');
     }
   };
 
-  const handleResetDefault = () => {
+  const handleResetDefault = async () => {
     if (window.confirm("Restore default Sensei photo?")) {
-      localStorage.removeItem('dojo_sensei_photo');
-      setSenseiPhoto("https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1000");
-      setSaveSuccess(true);
-      setTimeout(() => {
-        setSaveSuccess(false);
-        setEditModalOpen(false);
-      }, 1000);
+      const defaultPhoto = "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1000";
+      
+      try {
+        localStorage.removeItem('dojo_sensei_photo');
+
+        await saveDojoData('sensei_photo', defaultPhoto);
+
+        setSenseiPhoto(defaultPhoto);
+        setSaveSuccess(true);
+        setTimeout(() => {
+          setSaveSuccess(false);
+          setEditModalOpen(false);
+        }, 1000);
+      } catch (err) {
+        setFileError(err.message || 'Failed to reset photo on server.');
+      }
     }
   };
 
