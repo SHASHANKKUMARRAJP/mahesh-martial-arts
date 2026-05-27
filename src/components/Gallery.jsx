@@ -23,50 +23,7 @@ import {
 } from 'lucide-react';
 import { fetchDojoData, saveDojoData, uploadDojoFile, isSupabaseConfigured } from '../supabase';
 
-const defaultItems = [
-  {
-    id: 'default-1',
-    src: "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1200",
-    title: "COMBAT MASTERY",
-    type: "photo",
-    category: "Training"
-  },
-  {
-    id: 'default-2',
-    src: "https://assets.mixkit.co/videos/preview/mixkit-man-performing-karate-moves-in-front-of-a-sunset-34062-large.mp4",
-    title: "SUNSET KATAS",
-    type: "video",
-    category: "Sensei"
-  },
-  {
-    id: 'default-3',
-    src: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&q=80&w=800",
-    title: "KINETICS & SPEED",
-    type: "photo",
-    category: "Training"
-  },
-  {
-    id: 'default-4',
-    src: "https://img.youtube.com/vi/FqS71K4uT1g/maxresdefault.jpg",
-    title: "STICK ROTATION",
-    type: "photo",
-    category: "Focus"
-  },
-  {
-    id: 'default-5',
-    src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-martial-arts-training-41484-large.mp4",
-    title: "AGILITY SPEEDS",
-    type: "video",
-    category: "Sensei"
-  },
-  {
-    id: 'default-6',
-    src: "https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?auto=format&fit=crop&q=80&w=1200",
-    title: "DOJO DISCIPLINE",
-    type: "photo",
-    category: "Focus"
-  }
-];
+const defaultItems = [];
 
 
 // Simple IndexedDB wrapper for storing large gallery data
