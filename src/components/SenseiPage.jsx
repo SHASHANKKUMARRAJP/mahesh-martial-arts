@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Award, Shield, Calendar, Zap, Flame, BookOpen, Target, Check, Camera, Upload, X, Lock, Unlock, Loader2, AlertCircle } from 'lucide-react';
-import { fetchDojoData, saveDojoData } from '../supabase';
+import { fetchDojoData, saveDojoData, uploadDojoFile, isSupabaseConfigured } from '../supabase';
 
 export default function SenseiPage() {
   const [senseiPhoto, setSenseiPhoto] = useState(() => {
@@ -34,6 +34,8 @@ export default function SenseiPage() {
   const fileInputRef = useRef(null);
   const [dragOver, setDragOver] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [fileInput, setFileInput] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -168,6 +170,8 @@ export default function SenseiPage() {
       return;
     }
 
+    setFileInput(file);
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setFilePreview(reader.result);
@@ -178,27 +182,45 @@ export default function SenseiPage() {
   const handleSavePhoto = async (e) => {
     e.preventDefault();
     setFileError('');
+    setIsSaving(true);
 
     let finalSrc = '';
     if (photoSourceType === 'url') {
       if (!newPhotoUrl.trim()) {
         setFileError('Please enter a valid URL.');
+        setIsSaving(false);
         return;
       }
       finalSrc = newPhotoUrl.trim();
     } else {
       if (!filePreview) {
         setFileError('Please select or drag an image first.');
+        setIsSaving(false);
         return;
       }
-      finalSrc = filePreview;
+      
+      try {
+        if (fileInput && isSupabaseConfigured) {
+          finalSrc = await uploadDojoFile('gallery', fileInput);
+        } else {
+          finalSrc = filePreview;
+        }
+      } catch (err) {
+        setFileError(err.message || 'File upload failed.');
+        setIsSaving(false);
+        return;
+      }
     }
 
     try {
+      if (isSupabaseConfigured) {
+        const success = await saveDojoData('sensei_photo', finalSrc);
+        if (!success) {
+          throw new Error('Failed to save photo changes to Supabase cloud database.');
+        }
+      }
+
       localStorage.setItem('dojo_sensei_photo', finalSrc);
-
-      await saveDojoData('sensei_photo', finalSrc);
-
       setSenseiPhoto(finalSrc);
       setSaveSuccess(true);
       setTimeout(() => {
@@ -207,9 +229,12 @@ export default function SenseiPage() {
         // Clear temp inputs
         setNewPhotoUrl('');
         setFilePreview('');
+        setFileInput(null);
       }, 1500);
     } catch (err) {
       setFileError(err.message || 'Failed to save to database: image may be too large.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -1034,9 +1059,17 @@ export default function SenseiPage() {
                   <div className="space-y-2 pt-2 border-t border-white/5">
                     <button
                       type="submit"
-                      className="w-full py-2.5 bg-neonOrange text-black font-cyber font-bold tracking-widest rounded-xl transition-all duration-300 text-xs uppercase"
+                      disabled={isSaving}
+                      className="w-full py-2.5 bg-neonOrange disabled:bg-neonOrange/20 disabled:text-black/40 text-black font-cyber font-bold tracking-widest rounded-xl transition-all duration-300 text-xs uppercase flex items-center justify-center gap-2"
                     >
-                      SAVE PHOTO
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          SAVING PHOTO...
+                        </>
+                      ) : (
+                        'SAVE PHOTO'
+                      )}
                     </button>
                     <div className="flex gap-2">
                       <button

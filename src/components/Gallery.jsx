@@ -21,9 +21,53 @@ import {
   Save,
   Loader2
 } from 'lucide-react';
-import { fetchDojoData, saveDojoData } from '../supabase';
+import { fetchDojoData, saveDojoData, uploadDojoFile, isSupabaseConfigured } from '../supabase';
 
-const defaultItems = [];
+const defaultItems = [
+  {
+    id: 'default-1',
+    src: "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1200",
+    title: "COMBAT MASTERY",
+    type: "photo",
+    category: "Training"
+  },
+  {
+    id: 'default-2',
+    src: "https://assets.mixkit.co/videos/preview/mixkit-man-performing-karate-moves-in-front-of-a-sunset-34062-large.mp4",
+    title: "SUNSET KATAS",
+    type: "video",
+    category: "Sensei"
+  },
+  {
+    id: 'default-3',
+    src: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&q=80&w=800",
+    title: "KINETICS & SPEED",
+    type: "photo",
+    category: "Training"
+  },
+  {
+    id: 'default-4',
+    src: "https://img.youtube.com/vi/FqS71K4uT1g/maxresdefault.jpg",
+    title: "STICK ROTATION",
+    type: "photo",
+    category: "Focus"
+  },
+  {
+    id: 'default-5',
+    src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-martial-arts-training-41484-large.mp4",
+    title: "AGILITY SPEEDS",
+    type: "video",
+    category: "Sensei"
+  },
+  {
+    id: 'default-6',
+    src: "https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?auto=format&fit=crop&q=80&w=1200",
+    title: "DOJO DISCIPLINE",
+    type: "photo",
+    category: "Focus"
+  }
+];
+
 
 // Simple IndexedDB wrapper for storing large gallery data
 const dbName = 'DojoGalleryDB';
@@ -262,65 +306,75 @@ export default function Gallery() {
   const dragRef = useRef(null);
   const [dragOver, setDragOver] = useState(false);
 
-  // Initialize gallery list from IndexedDB
+  // Initialize gallery list from IndexedDB and Supabase
   useEffect(() => {
     const loadMedia = async () => {
-      const cloudData = await fetchDojoData('gallery');
-      if (cloudData) {
-        try {
-          const customItems = Array.isArray(cloudData) ? cloudData : Object.values(cloudData);
-          const sanitizedItems = customItems.filter(item => item && item.id && !item.id.startsWith('default-')).map(item => ({
-            ...item,
-            type: (item.type === 'video' || item.type === 'photo') ? item.type : 'photo'
-          }));
-          setMediaList([...defaultItems, ...sanitizedItems]);
-          await saveGalleryMedia(sanitizedItems);
-          return;
-        } catch (err) {
-          console.warn('Supabase parse failed, falling back to IndexedDB:', err);
+      let cloudCustomItems = [];
+      let cloudLoaded = false;
+      
+      try {
+        const cloudData = await fetchDojoData('gallery');
+        if (cloudData) {
+          const parsed = Array.isArray(cloudData) ? cloudData : Object.values(cloudData);
+          cloudCustomItems = parsed.filter(item => item && item.id && !item.id.startsWith('default-'));
+          cloudLoaded = true;
         }
+      } catch (err) {
+        console.warn('Supabase fetch failed during initialization:', err);
       }
 
+      let localCustomItems = [];
       try {
         const savedData = await getGalleryMedia();
         if (savedData) {
-          // Filter out default items from database, keeping only custom user uploads and normalize types
-          const customItems = savedData.filter(item => !item.id.startsWith('default-')).map(item => ({
-            ...item,
-            type: (item.type === 'video' || item.type === 'photo') ? item.type : 'photo'
-          }));
-          setMediaList([...defaultItems, ...customItems]);
-          await saveGalleryMedia(customItems);
+          localCustomItems = savedData.filter(item => item && item.id && !item.id.startsWith('default-'));
         } else {
           // Fallback to legacy LocalStorage
           const legacySaved = localStorage.getItem('dojo_gallery_media');
           if (legacySaved) {
             try {
               const parsed = JSON.parse(legacySaved);
-              const customItems = parsed.filter(item => !item.id.startsWith('default-')).map(item => ({
-                ...item,
-                type: (item.type === 'video' || item.type === 'photo') ? item.type : 'photo'
-              }));
-              setMediaList([...defaultItems, ...customItems]);
-              await saveGalleryMedia(customItems);
+              localCustomItems = parsed.filter(item => item && item.id && !item.id.startsWith('default-'));
               localStorage.removeItem('dojo_gallery_media');
-            } catch (e) {
-              setMediaList(defaultItems);
-            }
-          } else {
-            setMediaList(defaultItems);
-            await saveGalleryMedia([]);
+            } catch (_) {}
           }
         }
       } catch (err) {
         console.error('Error loading media from IndexedDB:', err);
-        setMediaList(defaultItems);
+      }
+
+      // Merge local and cloud custom items to prevent data loss
+      const mergedCustomItemsMap = new Map();
+      localCustomItems.forEach(item => mergedCustomItemsMap.set(item.id, item));
+      cloudCustomItems.forEach(item => mergedCustomItemsMap.set(item.id, item));
+      
+      const mergedCustomItems = Array.from(mergedCustomItemsMap.values()).map(item => ({
+        ...item,
+        type: (item.type === 'video' || item.type === 'photo') ? item.type : 'photo'
+      }));
+
+      setMediaList([...defaultItems, ...mergedCustomItems]);
+      
+      // Save the merged list back to IndexedDB so they are cached locally
+      try {
+        await saveGalleryMedia(mergedCustomItems);
+      } catch (err) {
+        console.error('Failed to update local cache during merge:', err);
+      }
+
+      // If we found local items that weren't in the cloud, try to upload them to sync
+      if (cloudLoaded && localCustomItems.length > cloudCustomItems.length && isSupabaseConfigured) {
+        try {
+          await saveDojoData('gallery', mergedCustomItems);
+        } catch (err) {
+          console.warn('Failed to auto-sync local items to Supabase:', err);
+        }
       }
     };
     loadMedia();
   }, []);
 
-  // Save to IndexedDB
+  // Save to IndexedDB and Supabase
   const saveMediaList = async (newList) => {
     const previousList = mediaList;
     setMediaList(newList);
@@ -328,15 +382,32 @@ export default function Gallery() {
     setIsSaving(true);
     try {
       const customItems = newList.filter(item => !item.id.startsWith('default-'));
+      
+      let supabaseError = false;
+      if (isSupabaseConfigured) {
+        // Save to Supabase first
+        const success = await saveDojoData('gallery', customItems);
+        if (!success) {
+          supabaseError = true;
+          console.warn('Failed to save gallery changes to Supabase cloud database.');
+        }
+      }
+
+      // Always save to local device storage so changes are preserved locally
       await saveGalleryMedia(customItems);
-
-      // Save to Supabase
-      await saveDojoData('gallery', customItems);
-
-      setIsSaved(true);
+      
+      if (supabaseError) {
+        setIsSaved(false);
+        throw new Error('Saved locally to your device, but failed to sync with the Supabase database. Please check your network or database policies.');
+      } else {
+        setIsSaved(true);
+      }
     } catch (e) {
       console.error('Failed to save to database:', e);
-      setMediaList(previousList);
+      // Only roll back if we didn't save locally
+      if (!e.message.includes('Saved locally')) {
+        setMediaList(previousList);
+      }
       throw e;
     } finally {
       setIsSaving(false);
@@ -473,34 +544,44 @@ export default function Gallery() {
       return;
     }
 
-    let finalSrc = '';
-    if (sourceType === 'url') {
-      if (!urlInput.trim()) {
-        setError('Please paste a working URL link.');
-        return;
-      }
-      finalSrc = urlInput.trim();
-    } else {
-      if (!filePreview) {
-        setError('Please drop or select a photo/video file.');
-        return;
-      }
-      finalSrc = filePreview;
-    }
-
-    const newItem = {
-      id: 'custom-' + Date.now(),
-      title: title.trim().toUpperCase(),
-      src: finalSrc,
-      type: type,
-      category: category || 'General',
-      target: submitTarget // 'gallery' or 'archive'
-    };
-
-    const updatedList = [newItem, ...mediaList];
-    
+    setIsSaving(true);
     try {
+      let finalSrc = '';
+      if (sourceType === 'url') {
+        if (!urlInput.trim()) {
+          setError('Please paste a working URL link.');
+          setIsSaving(false);
+          return;
+        }
+        finalSrc = urlInput.trim();
+      } else {
+        if (!fileInput) {
+          setError('Please drop or select a photo/video file.');
+          setIsSaving(false);
+          return;
+        }
+        
+        // Upload the file to Supabase if configured
+        if (isSupabaseConfigured) {
+          finalSrc = await uploadDojoFile('gallery', fileInput);
+        } else {
+          // Fallback to base64 preview for local mode
+          finalSrc = filePreview;
+        }
+      }
+
+      const newItem = {
+        id: 'custom-' + Date.now(),
+        title: title.trim().toUpperCase(),
+        src: finalSrc,
+        type: type,
+        category: type === 'video' ? 'Video' : 'Photo',
+        target: submitTarget // 'gallery' or 'archive'
+      };
+
+      const updatedList = [newItem, ...mediaList];
       await saveMediaList(updatedList);
+      
       setSuccess(true);
       // Reset form
       setTitle('');
@@ -510,7 +591,18 @@ export default function Gallery() {
       if (fileInputRef.current) fileInputRef.current.value = '';
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      setError('Storage limit exceeded! Try a smaller image or enter an external URL link instead.');
+      console.error(err);
+      setError(err.message || 'Storage limit exceeded! Try a smaller image or enter an external URL link instead.');
+      if (err.message && err.message.includes('Saved locally')) {
+        // Reset form on local save success
+        setTitle('');
+        setUrlInput('');
+        setFileInput(null);
+        setFilePreview('');
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -521,16 +613,24 @@ export default function Gallery() {
       return;
     }
     const updated = mediaList.filter(item => item.id !== id);
-    await saveMediaList(updated);
+    try {
+      await saveMediaList(updated);
+    } catch (err) {
+      alert("Failed to delete item: " + err.message);
+    }
   };
 
   // Reset to Defaults (Guarded)
   const handleResetDefaults = async () => {
     if (!isAuthenticated) return;
     if (window.confirm("Restore standard premium Dojo assets? Custom uploads will be cleared.")) {
-      await saveMediaList(defaultItems);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000);
+      try {
+        await saveMediaList(defaultItems);
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 2000);
+      } catch (err) {
+        setError("Reset failed: " + err.message);
+      }
     }
   };
 
@@ -541,7 +641,7 @@ export default function Gallery() {
     if (itemTarget !== viewTab) return false;
 
     if (filter === 'all') return true;
-    return item.category === filter;
+    return item.type === filter;
   });
 
   // Lightbox Navigation
