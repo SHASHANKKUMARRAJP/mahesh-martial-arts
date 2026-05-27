@@ -140,37 +140,9 @@ export default function Gallery() {
     // Developer fallback console log
     console.log(`[Dojo Security] Generated Reset OTP: ${otp}`);
 
-    const { adminEmail, adminPhone } = getAdminCredentials();
+    const { adminPhone } = getAdminCredentials();
 
-    if (method === 'email') {
-      try {
-        const response = await fetch(`https://formsubmit.co/ajax/${adminEmail}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            _subject: 'Dojo Portal Code',
-            code: otp,
-            message: `Your secure portal validation code is: ${otp}`
-          })
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (response.ok) {
-          setOtpSentMessage(`OTP dispatched to Gmail (${adminEmail.replace(/(.{2})(.*)(@.*)/, '$1***$3')}). IMPORTANT: If this is your first time, check your Inbox/Spam for a "FormSubmit Activation" email and click the button to activate email delivery!`);
-          setResetStep('verify_otp');
-        } else {
-          setOtpError(`FormSubmit API Error: ${data.message || response.statusText || 'Verification email pending or service rate-limited.'}`);
-        }
-      } catch (err) {
-        setOtpError(`Network error sending OTP email: ${err.message || 'Please check your connection and try again.'}`);
-      } finally {
-        setIsSendingOtp(false);
-      }
-    } else if (method === 'whatsapp') {
+    if (method === 'whatsapp') {
       // Original pre-filled WhatsApp redirect
       const message = `Dojo Admin Portal Request: Use OTP ${otp} to verify your identity and unlock credential configuration.`;
       const whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;

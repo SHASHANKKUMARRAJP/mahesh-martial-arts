@@ -98,35 +98,7 @@ export default function SenseiPage() {
 
     const { adminEmail, adminPhone } = getAdminCredentials();
 
-    if (method === 'email') {
-      try {
-        const response = await fetch(`https://formsubmit.co/ajax/${adminEmail}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            _subject: 'Sensei Photo Edit Code',
-            code: otp,
-            message: `Your secure validation code to change the Sensei photo is: ${otp}`
-          })
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (response.ok) {
-          setOtpSentMessage(`OTP sent to Gmail (${adminEmail.replace(/(.{2})(.*)(@.*)/, '$1***$3')}). Check Inbox/Spam.`);
-          setAuthStep('verify_otp');
-        } else {
-          setOtpError(`FormSubmit API Error: ${data.message || response.statusText}`);
-        }
-      } catch (err) {
-        setOtpError(`Network error sending OTP: ${err.message}`);
-      } finally {
-        setIsSendingOtp(false);
-      }
-    } else if (method === 'whatsapp') {
+    if (method === 'whatsapp') {
       const message = `Dojo Sensei Photo Request: Use OTP ${otp} to verify identity.`;
       const whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
@@ -887,13 +859,7 @@ export default function SenseiPage() {
                           >
                             Send OTP to Whatsapp
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendOtp('email')}
-                            className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-800 hover:brightness-110 text-white font-cyber font-bold tracking-widest rounded-xl transition-all duration-300 text-xs uppercase"
-                          >
-                            Send OTP to Gmail
-                          </button>
+
                           <button
                             type="button"
                             onClick={() => setAuthStep('login')}
