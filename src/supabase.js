@@ -128,8 +128,9 @@ export const uploadDojoFile = async (bucketName, file) => {
     });
 
     // 2. If it fails due to bucket not existing, try to create bucket and retry
+    let errText = '';
     if (!res.ok) {
-      const errText = await res.text();
+      errText = await res.text();
       let errJson = {};
       try { errJson = JSON.parse(errText); } catch (_) {}
       
@@ -150,13 +151,16 @@ export const uploadDojoFile = async (bucketName, file) => {
             },
             body: file
           });
+          // Retrieve new error message if retry also failed
+          if (!res.ok) {
+            errText = await res.text();
+          }
         }
       }
     }
 
     if (!res.ok) {
-      const errorMsg = await res.text();
-      throw new Error(`Upload failed (Status ${res.status}): ${errorMsg}`);
+      throw new Error(`Upload failed (Status ${res.status}): ${errText}`);
     }
 
     // 3. Return the public URL
