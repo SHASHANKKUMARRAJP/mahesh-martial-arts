@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, User, Award, Target, X, BookOpen, Shield, Pencil, Plus, Trash2, Save, RotateCcw } from 'lucide-react';
+import { Calendar, Clock, User, Award, Target, X, BookOpen, Shield, Pencil, Plus, Trash2, Save, RotateCcw, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { fetchDojoData, saveDojoData, isSupabaseConfigured } from '../supabase';
 
 const programs = [
   { 
@@ -331,12 +332,112 @@ export default function Programs() {
     return JSON.parse(JSON.stringify(defaultWeekSchedule));
   });
 
+  // Admin authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('dojo_admin_auth') === 'true';
+  });
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [adminIdInput, setAdminIdInput] = useState('');
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isSavingCloud, setIsSavingCloud] = useState(false);
+
+  const getAdminCredentials = () => {
+    const savedId = localStorage.getItem('dojo_admin_id');
+    const savedPassword = localStorage.getItem('dojo_admin_password');
+    let savedEmail = localStorage.getItem('dojo_admin_email');
+    if (savedEmail === 'initiate@mahesh.dojo' || !savedEmail) {
+      savedEmail = 'maheshmartialarts66@gmail.com';
+      localStorage.setItem('dojo_admin_email', 'maheshmartialarts66@gmail.com');
+    }
+    const savedPhone = localStorage.getItem('dojo_admin_phone');
+    return {
+      adminId: savedId || 'admin',
+      adminPassword: savedPassword || 'maheshsensei',
+      adminEmail: savedEmail || 'maheshmartialarts66@gmail.com',
+      adminPhone: savedPhone || '917411421911'
+    };
+  };
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    setLoginError('');
+
+    const trimmedId = adminIdInput.trim().toLowerCase();
+    const password = adminPasswordInput;
+
+    const { adminId, adminPassword } = getAdminCredentials();
+
+    if (trimmedId === adminId.toLowerCase() && password === adminPassword) {
+      sessionStorage.setItem('dojo_admin_auth', 'true');
+      setIsAuthenticated(true);
+      setShowLoginModal(false);
+      setAdminIdInput('');
+      setAdminPasswordInput('');
+      setLoginError('');
+      setIsEditMode(true);
+    } else {
+      setLoginError('ACCESS DENIED: Invalid Credentials.');
+    }
+  };
+
+  // Sync auth status when schedule is opened
+  useEffect(() => {
+    setIsAuthenticated(sessionStorage.getItem('dojo_admin_auth') === 'true');
+  }, [isScheduleOpen]);
+
+  // Fetch from Supabase on mount
+  useEffect(() => {
+    const loadSchedule = async () => {
+      try {
+        const cloudData = await fetchDojoData('weekly_schedule');
+        if (cloudData) {
+          setWeekSchedule(cloudData);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+        }
+      } catch (err) {
+        console.warn('Failed to load schedule from Supabase:', err);
+      }
+    };
+    loadSchedule();
+  }, []);
+
   // Persist schedule to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(weekSchedule));
     } catch (e) { /* ignore storage errors */ }
   }, [weekSchedule]);
+
+  const saveScheduleToCloud = async (scheduleToSave) => {
+    if (isSupabaseConfigured) {
+      setIsSavingCloud(true);
+      try {
+        const success = await saveDojoData('weekly_schedule', scheduleToSave);
+        if (success) {
+          setSaveFlash(true);
+          setTimeout(() => setSaveFlash(false), 1200);
+        } else {
+          console.error("Failed to save schedule to Supabase.");
+        }
+      } catch (err) {
+        console.error("Supabase save failed:", err);
+      } finally {
+        setIsSavingCloud(false);
+      }
+    } else {
+      setSaveFlash(true);
+      setTimeout(() => setSaveFlash(false), 1200);
+    }
+  };
+
+  const handleCloseModal = () => {
+    if (isEditMode) {
+      saveScheduleToCloud(weekSchedule);
+      setIsEditMode(false);
+    }
+    setIsScheduleOpen(false);
+  };
 
   // Keydown event listener to close modal on Escape
   useEffect(() => {
@@ -345,8 +446,7 @@ export default function Programs() {
         if (addingCell) {
           setAddingCell(null);
         } else {
-          setIsScheduleOpen(false);
-          setIsEditMode(false);
+          handleCloseModal();
         }
       }
     };
@@ -358,7 +458,7 @@ export default function Programs() {
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'unset';
     };
-  }, [isScheduleOpen, addingCell]);
+  }, [isScheduleOpen, addingCell, isEditMode, weekSchedule]);
 
   // Add a class to a specific cell
   const handleAddClass = useCallback((rowIdx, day, classOption) => {
@@ -402,18 +502,17 @@ export default function Programs() {
   }, []);
 
   // Reset to default schedule
-  const handleResetSchedule = useCallback(() => {
-    setWeekSchedule(JSON.parse(JSON.stringify(defaultWeekSchedule)));
-    setSaveFlash(true);
-    setTimeout(() => setSaveFlash(false), 1200);
-  }, []);
+  const handleResetSchedule = () => {
+    const defaultCopy = JSON.parse(JSON.stringify(defaultWeekSchedule));
+    setWeekSchedule(defaultCopy);
+    saveScheduleToCloud(defaultCopy);
+  };
 
   // Save confirmation flash
-  const handleSaveAndExit = useCallback(() => {
+  const handleSaveAndExit = () => {
     setIsEditMode(false);
-    setSaveFlash(true);
-    setTimeout(() => setSaveFlash(false), 1200);
-  }, []);
+    saveScheduleToCloud(weekSchedule);
+  };
 
   return (
     <section id="programs" className="py-24 relative z-10">
@@ -524,7 +623,7 @@ export default function Programs() {
             >
               {/* Close Button */}
               <button 
-                onClick={() => setIsScheduleOpen(false)}
+                onClick={handleCloseModal}
                 className="absolute top-6 right-6 md:top-8 md:right-8 w-12 h-12 rounded-full border border-white/10 hover:border-neonOrange/50 hover:bg-white/5 flex items-center justify-center text-white hover:text-neonOrange transition-all duration-300 z-50 shadow-lg"
               >
                 <X size={20} />
@@ -533,7 +632,7 @@ export default function Programs() {
               {/* Modal Header */}
               <div className="mb-10 text-center md:text-left pr-12 flex flex-col items-center md:items-start">
                 <button 
-                  onClick={() => setIsScheduleOpen(false)}
+                  onClick={handleCloseModal}
                   className="flex items-center gap-2 text-xs md:text-sm font-cyber uppercase tracking-[0.2em] text-gray-400 hover:text-neonOrange mb-6 transition-all duration-300 group self-center md:self-start"
                 >
                   <span className="transform group-hover:-translate-x-2 transition-transform duration-300 text-neonOrange">&larr;</span>
@@ -588,19 +687,24 @@ export default function Programs() {
                       </p>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
-                      {/* Save flash indicator */}
+                      {/* Save/Sync flash indicator */}
                       <AnimatePresence>
-                        {saveFlash && (
+                        {isSavingCloud ? (
+                          <div className="text-xs font-cyber text-neonOrange tracking-widest uppercase flex items-center gap-1.5 select-none">
+                            <Loader2 className="w-3 h-3 animate-spin text-neonOrange" />
+                            Syncing...
+                          </div>
+                        ) : saveFlash ? (
                           <motion.div 
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -10 }}
-                            className="text-xs font-cyber text-emerald-400 tracking-widest uppercase flex items-center gap-1.5"
+                            className="text-xs font-cyber text-emerald-400 tracking-widest uppercase flex items-center gap-1.5 animate-pulse"
                           >
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            Saved
+                            Saved & Synced
                           </motion.div>
-                        )}
+                        ) : null}
                       </AnimatePresence>
 
                       {isEditMode && (
@@ -623,7 +727,19 @@ export default function Programs() {
                         </>
                       )}
                       <button
-                        onClick={() => { setIsEditMode(!isEditMode); setAddingCell(null); setShowAddRow(false); }}
+                        onClick={() => {
+                          if (!isAuthenticated) {
+                            setShowLoginModal(true);
+                          } else {
+                            if (isEditMode) {
+                              handleSaveAndExit();
+                            } else {
+                              setIsEditMode(true);
+                              setAddingCell(null);
+                              setShowAddRow(false);
+                            }
+                          }
+                        }}
                         className={`px-4 py-1.5 rounded-full border text-[10px] font-cyber tracking-widest uppercase transition-all duration-300 flex items-center gap-1.5 ${
                           isEditMode 
                             ? 'bg-neonOrange/15 border-neonOrange/40 text-neonOrange shadow-[0_0_20px_rgba(212,175,55,0.15)]' 
@@ -892,7 +1008,7 @@ export default function Programs() {
               {/* Footer Return Button */}
               <div className="flex justify-center mt-12 border-t border-white/5 pt-8">
                 <button
-                  onClick={() => setIsScheduleOpen(false)}
+                  onClick={handleCloseModal}
                   className="px-8 py-3.5 border border-white/10 rounded-full hover:bg-white/5 hover:border-neonOrange text-white flex items-center gap-3 font-cyber tracking-widest text-xs md:text-sm transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.05)] hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] group"
                 >
                   <span className="transform group-hover:-translate-x-1.5 transition-transform duration-300 text-neonOrange">&larr;</span>
@@ -901,6 +1017,85 @@ export default function Programs() {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Admin Authentication Modal */}
+      <AnimatePresence>
+        {showLoginModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-md bg-[#090909] border border-neonOrange/20 p-8 rounded-2xl shadow-[0_0_50px_rgba(255,110,0,0.15)] relative overflow-hidden text-left"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => {
+                  setShowLoginModal(false);
+                  setLoginError('');
+                  setAdminIdInput('');
+                  setAdminPasswordInput('');
+                }}
+                className="absolute top-4 right-4 text-gray-400 hover:text-neonOrange transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-6 pt-2">
+                <div className="text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto text-red-500">
+                    <Lock className="w-6 h-6 animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-cyber font-bold text-white tracking-widest uppercase">ADMIN ACCESS REQUIRED</h3>
+                    <p className="text-[10px] text-neonOrange/85 font-cyber tracking-wider uppercase mt-0.5">Secure Schedule Customization</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleAdminLogin} className="space-y-4">
+                  {loginError && (
+                    <div className="p-3 rounded-lg bg-red-950/40 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{loginError}</span>
+                    </div>
+                  )}
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-cyber tracking-widest uppercase text-gray-400">Admin ID</label>
+                    <input
+                      type="text"
+                      required
+                      value={adminIdInput}
+                      onChange={(e) => setAdminIdInput(e.target.value)}
+                      placeholder="Enter admin ID"
+                      className="w-full bg-[#020202] border border-neonOrange/15 rounded-xl px-4 py-3 text-sm text-[#ffe28a] placeholder-gray-600 focus:outline-none focus:border-neonOrange/50 focus:text-white transition-all duration-300 font-sans"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-cyber tracking-widest uppercase text-gray-400">Password</label>
+                    <input
+                      type="password"
+                      required
+                      value={adminPasswordInput}
+                      onChange={(e) => setAdminPasswordInput(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full bg-[#020202] border border-neonOrange/15 rounded-xl px-4 py-3 text-sm text-[#ffe28a] placeholder-gray-600 focus:outline-none focus:border-neonOrange/50 focus:text-white transition-all duration-300 font-sans"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-gradient-to-r from-neonOrange to-orange-600 hover:brightness-110 text-black font-cyber font-bold tracking-widest rounded-xl transition-all duration-300 text-xs shadow-[0_0_20px_rgba(255,110,0,0.2)] uppercase"
+                  >
+                    AUTHENTICATE
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </section>
