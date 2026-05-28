@@ -63,13 +63,13 @@ export default function Trainers() {
               
               <div className="flex flex-col md:flex-row min-h-[380px] md:h-[400px]">
                 {/* Image Section */}
-                <div className="w-full md:w-5/12 relative overflow-hidden h-[300px] md:h-full shrink-0">
+                <div className="w-full md:w-5/12 relative overflow-hidden h-[300px] md:h-full shrink-0 bg-[#0a0a0a]">
                   <img 
                     src={t.image} 
                     alt={t.name} 
-                    className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" 
+                    className="absolute inset-0 w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all duration-700" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#030303]/10 via-[#030303]/60 to-[#030303] opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#030303]/10 via-transparent to-[#030303] opacity-70 group-hover:opacity-40 transition-opacity duration-500" />
                 </div>
 
                 {/* Content Section */}

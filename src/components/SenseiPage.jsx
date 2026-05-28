@@ -426,7 +426,7 @@ export default function SenseiPage() {
                 <img 
                   src={senseiPhoto} 
                   alt="Mahesh Sensei" 
-                  className="w-full h-[65vh] object-cover group-hover:scale-[1.02] transition-transform duration-[1.2s] ease-out"
+                  className="w-full h-[65vh] object-contain object-center bg-[#0a0a0a] transition-transform duration-[1.2s] ease-out group-hover:scale-[1.02]"
                 />
                 
                 {/* Vignette bottom */}
