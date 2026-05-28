@@ -12,6 +12,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import SenseiPage from './components/SenseiPage';
 import GalleryPage from './components/GalleryPage';
+import SchedulePage from './components/SchedulePage';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -49,6 +50,10 @@ function App() {
 
   if (currentHash === '#gallery') {
     return <GalleryPage />;
+  }
+
+  if (currentHash === '#schedule') {
+    return <SchedulePage />;
   }
 
   return (
