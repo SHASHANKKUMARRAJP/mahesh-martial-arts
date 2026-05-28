@@ -438,35 +438,6 @@ export default function Programs() {
               TRAINING <span className="text-gradient">MODULES</span> & <span className="text-gradient">WEEKLY SCHEDULE</span>
             </motion.h3>
           </div>
-          <motion.button 
-             onClick={() => setIsScheduleOpen(true)}
-             whileHover={{ scale: 1.04 }}
-             whileTap={{ scale: 0.97 }}
-             className="group relative px-6 py-3 border border-neonOrange text-neonOrange hover:text-black rounded-full overflow-hidden transition-colors duration-500 font-cyber tracking-wider text-[11px] md:text-xs font-bold bg-transparent shadow-[0_0_15px_rgba(255,110,0,0.15)] mt-6 md:mt-0 flex items-center justify-center gap-2 select-none"
-          >
-            {/* Smooth Slide-up Background Fill */}
-            <div className="absolute inset-0 bg-neonOrange origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none" />
-
-            {/* Roll-up Text Reveal */}
-            <span className="relative z-10 inline-flex overflow-hidden">
-              <span className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full">
-                PRESS HERE TO KNOW MORE AND THE WEEKLY SCHEDULE
-              </span>
-              <span className="absolute inset-0 translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 text-black">
-                PRESS HERE TO KNOW MORE AND THE WEEKLY SCHEDULE
-              </span>
-            </span>
-
-            {/* Roll-up Arrow Reveal */}
-            <span className="relative z-10 inline-flex overflow-hidden w-3.5 h-3.5">
-              <span className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full">
-                &rarr;
-              </span>
-              <span className="absolute inset-0 translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 text-black">
-                &rarr;
-              </span>
-            </span>
-          </motion.button>
         </div>
 
 
@@ -483,6 +454,55 @@ export default function Programs() {
               <ProgramCard prog={prog} />
             </motion.div>
           ))}
+        </div>
+
+        {/* Centered wide capsule button below the grid */}
+        <div className="flex justify-center mt-16 px-4">
+          <motion.button 
+             onClick={() => setIsScheduleOpen(true)}
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.8, ease: "easeOut" }}
+             whileHover={{ scale: 1.02, y: -2 }}
+             whileTap={{ scale: 0.98 }}
+             className="group relative w-full max-w-4xl px-12 py-5 md:py-6 border-2 border-neonOrange text-neonOrange hover:text-black rounded-full overflow-hidden transition-all duration-500 font-cyber tracking-[0.18em] text-xs md:text-sm font-black bg-transparent hover:shadow-[0_0_40px_rgba(255,110,0,0.4)] flex items-center justify-center gap-3 select-none"
+          >
+            {/* Ambient Background Glow Backplate */}
+            <div className="absolute inset-0 rounded-full bg-neonOrange/20 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none -z-10" />
+
+            {/* Sweeping Light Reflection / Glare Effect */}
+            <div className="absolute inset-0 w-[60%] bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-[30deg] -translate-x-[150%] group-hover:translate-x-[250%] transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-20" />
+
+            {/* Smooth Slide-up Background Fill */}
+            <div className="absolute inset-0 bg-neonOrange origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none" />
+
+            {/* Pulsing indicator light */}
+            <span className="relative flex h-2 w-2 shrink-0 group-hover:hidden transition-all duration-300">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neonOrange opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-neonOrange"></span>
+            </span>
+
+            {/* Roll-up Text Reveal */}
+            <span className="relative z-10 inline-flex overflow-hidden">
+              <span className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full">
+                PRESS HERE TO KNOW MORE AND THE WEEKLY SCHEDULE
+              </span>
+              <span className="absolute inset-0 translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 text-black">
+                PRESS HERE TO KNOW MORE AND THE WEEKLY SCHEDULE
+              </span>
+            </span>
+
+            {/* Roll-up Arrow Reveal with slide translation */}
+            <span className="relative z-10 inline-flex overflow-hidden w-4 h-4 items-center justify-center transform group-hover:translate-x-1.5 transition-transform duration-500 ease-out">
+              <span className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full text-sm">
+                &rarr;
+              </span>
+              <span className="absolute inset-0 translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 text-black text-sm">
+                &rarr;
+              </span>
+            </span>
+          </motion.button>
         </div>
       </div>
 

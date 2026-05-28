@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Instagram, ArrowUpRight } from 'lucide-react';
+import { Instagram, ArrowUpRight, ArrowUp } from 'lucide-react';
+
 
 const socials = [
   {
@@ -143,9 +144,10 @@ export default function SocialMedia() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neonOrange opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-neonOrange"></span>
           </span>
-          <p className="text-xs md:text-sm font-cyber tracking-[0.12em] text-neonOrange uppercase font-black">
-            Press any card to visit the official account
+          <p className="text-xs md:text-sm font-cyber tracking-[0.12em] text-neonOrange uppercase font-black flex items-center gap-2">
+            Press the card to visit the official account <ArrowUp className="w-4 h-4 shrink-0 animate-bounce" />
           </p>
+
         </motion.div>
       </div>
     </section>
