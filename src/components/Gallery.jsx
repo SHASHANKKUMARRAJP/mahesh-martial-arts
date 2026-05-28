@@ -123,7 +123,7 @@ export default function Gallery() {
       adminId: savedId || 'admin',
       adminPassword: savedPassword || 'maheshsensei',
       adminEmail: savedEmail || 'maheshmartialarts66@gmail.com',
-      adminPhone: savedPhone || '918310311290'
+      adminPhone: savedPhone || '917411421911'
     };
   };
 
@@ -910,7 +910,7 @@ export default function Gallery() {
                             required
                             value={newAdminPhoneInput}
                             onChange={(e) => setNewAdminPhoneInput(e.target.value.replace(/\D/g, ''))}
-                            placeholder="e.g., 918310311290"
+                            placeholder="e.g., 917411421911"
                             className="w-full bg-[#0d0d0d] border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neonOrange transition-colors"
                           />
                         </div>

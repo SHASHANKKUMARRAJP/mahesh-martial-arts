@@ -4,7 +4,7 @@ import { fetchDojoData } from '../supabase';
 
 export default function Trainers() {
   const [senseiPhoto, setSenseiPhoto] = useState(() => {
-    return localStorage.getItem('dojo_sensei_photo') || 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=800';
+    return localStorage.getItem('dojo_sensei_photo') || '/mahesh_sensei.jpg';
   });
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Trainers() {
                   <img 
                     src={t.image} 
                     alt={t.name} 
-                    className="absolute inset-0 w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all duration-700" 
+                    className="absolute inset-0 w-full h-full object-cover object-[center_15%] opacity-80 group-hover:opacity-100 transition-all duration-700" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#030303]/10 via-transparent to-[#030303] opacity-70 group-hover:opacity-40 transition-opacity duration-500" />
                 </div>

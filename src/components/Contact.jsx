@@ -16,7 +16,7 @@ export default function Contact() {
     setPhoneError('');
     const emailPart = formData.email ? `%0A*Email:* ${formData.email}` : '';
     const text = `*New Inquiry from Mahesh Martial Arts Website*%0A%0A*Name:* ${formData.name}${emailPart}%0A*Phone:* ${formData.phone}%0A*Module:* ${formData.module}%0A*Message:* ${formData.message}`;
-    window.open(`https://wa.me/918310311290?text=${text}`, '_blank');
+    window.open(`https://wa.me/917411421911?text=${text}`, '_blank');
   };
 
   return (
@@ -140,7 +140,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <div className="text-gray-400 text-[10px] font-cyber tracking-[0.2em] mb-1.5 uppercase group-hover/item:text-neonOrange transition-colors duration-300">Direct Line</div>
-                    <div className="text-white text-lg md:text-xl font-black tracking-wide">+91 8310311290</div>
+                    <div className="text-white text-lg md:text-xl font-black tracking-wide">+91 7411421911</div>
                   </div>
                 </div>
 

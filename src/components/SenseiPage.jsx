@@ -5,7 +5,7 @@ import { fetchDojoData, saveDojoData, uploadDojoFile, isSupabaseConfigured } fro
 
 export default function SenseiPage() {
   const [senseiPhoto, setSenseiPhoto] = useState(() => {
-    return localStorage.getItem('dojo_sensei_photo') || "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1000";
+    return localStorage.getItem('dojo_sensei_photo') || "/mahesh_sensei.jpg";
   });
 
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -63,7 +63,7 @@ export default function SenseiPage() {
       adminId: savedId || 'admin',
       adminPassword: savedPassword || 'maheshsensei',
       adminEmail: savedEmail || 'maheshmartialarts66@gmail.com',
-      adminPhone: savedPhone || '918310311290'
+      adminPhone: savedPhone || '917411421911'
     };
   };
 
@@ -212,7 +212,7 @@ export default function SenseiPage() {
 
   const handleResetDefault = async () => {
     if (window.confirm("Restore default Sensei photo?")) {
-      const defaultPhoto = "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1000";
+      const defaultPhoto = "/mahesh_sensei.jpg";
       
       try {
         localStorage.removeItem('dojo_sensei_photo');
@@ -243,8 +243,8 @@ export default function SenseiPage() {
   const milestones = [
     { icon: <Award className="w-5 h-5 text-neonOrange" />, label: "Black Belt Achieved", value: "2012", desc: "Over a decade of certified mastery in karate techniques." },
     { icon: <Shield className="w-5 h-5 text-neonOrange" />, label: "Rank", value: "4th Dan Black Belt", desc: "Advanced degree representing senior training and expertise." },
-    { icon: <Calendar className="w-5 h-5 text-neonOrange" />, label: "Experience", value: "10+ Years", desc: "Dedicated to martial arts training and professional coaching." },
-    { icon: <Zap className="w-5 h-5 text-neonOrange" />, label: "Specialty Areas", value: "Expert Instructor", desc: "Karate, Yoga, Gymnastics & Stick Rotation techniques." },
+    { icon: <Calendar className="w-5 h-5 text-neonOrange" />, label: "Experience", value: "15+ Years", desc: "Dedicated to martial arts training and professional coaching." },
+    { icon: <Zap className="w-5 h-5 text-neonOrange" />, label: "Leadership Designation", value: "District Head of Karate", desc: "Karate, Yoga, Gymnastics & Stick Rotation techniques.", isFeatured: true },
     { icon: <Shield className="w-5 h-5 text-neonOrange" />, label: "Combat Skill", value: "Self Defense", desc: "Tactical and practical training for real-world personal safety." },
     { icon: <Flame className="w-5 h-5 text-neonOrange" />, label: "Coaching Focus", value: "Fitness & Discipline", desc: "Physical training coupled with strong mental discipline." }
   ];
@@ -426,7 +426,7 @@ export default function SenseiPage() {
                 <img 
                   src={senseiPhoto} 
                   alt="Mahesh Sensei" 
-                  className="w-full h-[65vh] object-contain object-center bg-[#0a0a0a] transition-transform duration-[1.2s] ease-out group-hover:scale-[1.02]"
+                  className="w-full h-[65vh] object-cover object-[center_15%] bg-[#0a0a0a] transition-transform duration-[1.2s] ease-out group-hover:scale-[1.02]"
                 />
                 
                 {/* Vignette bottom */}
@@ -544,10 +544,10 @@ export default function SenseiPage() {
                 <motion.div 
                   key={idx}
                   whileHover={{ y: -6 }}
-                  className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-6 rounded-xl hover:border-neonOrange/30 hover:shadow-[0_15px_45px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.05)] transition-all duration-500 relative group overflow-hidden"
+                  className="bg-gradient-to-br from-neonOrange/15 via-[#1b1509] to-[#040404] border border-neonOrange/45 hover:border-neonOrange/70 hover:shadow-[0_15px_45px_rgba(212,175,55,0.2),0_0_30px_rgba(212,175,55,0.15)] backdrop-blur-xl p-6 rounded-xl transition-all duration-500 relative group overflow-hidden"
                 >
                   {/* Left edge gold vertical indicator */}
-                  <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-neonOrange to-cyberOrange opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-l-xl" />
+                  <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-neonOrange to-cyberOrange transition-all duration-300 rounded-l-xl opacity-100" />
                   
                   {/* Metallic golden sheen sweep */}
                   <div className="absolute inset-0 w-[200%] h-full bg-[linear-gradient(115deg,transparent_30%,rgba(212,175,55,0.01)_40%,rgba(212,175,55,0.06)_50%,rgba(212,175,55,0.01)_60%,transparent_70%)] -translate-x-[100%] group-hover:translate-x-[50%] transition-transform duration-[1.2s] ease-in-out pointer-events-none" />
@@ -556,17 +556,19 @@ export default function SenseiPage() {
                   <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-neonOrange/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
                   <div className="flex justify-between items-center mb-6">
-                    <div className="text-sm font-cyber text-gray-500 tracking-widest uppercase group-hover:text-neonOrange transition-colors duration-300">{milestone.label}</div>
-                    <div className="w-9 h-9 rounded-full bg-neonOrange/5 border border-neonOrange/20 flex items-center justify-center group-hover:border-neonOrange/50 group-hover:bg-neonOrange/15 group-hover:shadow-[0_0_15px_rgba(212,175,55,0.15)] transition-all duration-500 shrink-0">
+                    <div className="text-sm font-cyber tracking-widest uppercase text-neonOrange transition-colors duration-300">
+                      {milestone.label}
+                    </div>
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-neonOrange/20 border border-neonOrange/60 shadow-[0_0_15px_rgba(212,175,55,0.25)] transition-all duration-500 shrink-0">
                       {milestone.icon}
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="text-2xl font-black font-cyber text-white uppercase tracking-wider text-glow group-hover:text-neonOrange transition-colors duration-300">
+                    <div className="text-2xl font-black font-cyber uppercase tracking-wider text-glow text-neonOrange text-glow-strong transition-colors duration-300">
                       {milestone.value}
                     </div>
-                    <p className="text-xs text-gray-400 font-light leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
+                    <p className="text-xs font-light leading-relaxed text-gray-200 transition-colors duration-300">
                       {milestone.desc}
                     </p>
                   </div>
@@ -597,7 +599,7 @@ export default function SenseiPage() {
                   <motion.div 
                     key={idx}
                     whileHover={{ x: 6 }}
-                    className="flex justify-between items-center p-4 bg-[#080808] border border-white/5 hover:border-neonOrange/20 rounded-xl transition-all duration-300 group shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
+                    className="flex justify-between items-center p-4 bg-gradient-to-br from-[#100c06]/35 via-[#080809]/95 to-black border border-white/5 hover:border-neonOrange/30 rounded-xl transition-all duration-300 group shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
                   >
                     <div className="flex items-center gap-4">
                       <div className="text-[9px] font-cyber text-neonOrange border border-neonOrange/20 bg-neonOrange/5 px-2 py-1 rounded shrink-0">
@@ -637,7 +639,7 @@ export default function SenseiPage() {
                 {philosophies.map((phil, idx) => (
                   <div 
                     key={idx}
-                    className="p-5 bg-[#080808] border border-white/5 rounded-xl hover:border-neonOrange/20 transition-all duration-300 flex gap-4 items-start shadow-[0_4px_15px_rgba(0,0,0,0.3)] relative group"
+                    className="p-5 bg-gradient-to-br from-[#100c06]/35 via-[#080809]/95 to-black border border-white/5 rounded-xl hover:border-neonOrange/30 transition-all duration-300 flex gap-4 items-start shadow-[0_4px_15px_rgba(0,0,0,0.3)] relative group"
                   >
                     <div className="w-7 h-7 rounded bg-neonOrange/10 border border-neonOrange/20 text-neonOrange text-xs font-cyber font-bold flex items-center justify-center shrink-0">
                       0{idx + 1}
