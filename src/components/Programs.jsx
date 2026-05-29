@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, useMotionValue, useTransform, useMotionTemplate } from 'framer-motion';
+import { Calendar, Clock, BookOpen, Pencil, ChevronRight, Sparkles } from 'lucide-react';
 
 export const programs = [
   { 
@@ -291,6 +292,185 @@ function ProgramCard({ prog }) {
   );
 }
 
+
+function DojoPlannerShowcase() {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    
+    mouseX.set(mx);
+    mouseY.set(my);
+    x.set(mx / rect.width - 0.5);
+    y.set(my / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  const rotateX = useTransform(y, [-0.5, 0.5], [5, -5]); // Subtle tilt for large cards
+  const rotateY = useTransform(x, [-0.5, 0.5], [-5, 5]);
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${mouseX}px ${mouseY}px, rgba(212,175,55,0.08) 0%, transparent 50%)`;
+
+  const miniTimetable = [
+    { day: 'Mon', time: '05:30 PM', name: 'KARATE', bg: 'bg-red-500/10 border-red-500/30 text-red-400 hover:border-red-500/60 hover:bg-red-500/20' },
+    { day: 'Tue', time: '06:00 AM', name: 'YOGA', bg: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:border-cyan-500/60 hover:bg-cyan-500/20' },
+    { day: 'Wed', time: '04:00 PM', name: 'CHESS', bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60 hover:bg-emerald-500/20' },
+    { day: 'Thu', time: '05:00 PM', name: 'CUBE', bg: 'bg-pink-500/10 border-pink-500/30 text-pink-400 hover:border-pink-500/60 hover:bg-pink-500/20' },
+    { day: 'Fri', time: '05:30 PM', name: 'KARATE', bg: 'bg-red-500/10 border-red-500/30 text-red-400 hover:border-red-500/60 hover:bg-red-500/20' },
+    { day: 'Sat', time: '04:00 PM', name: 'STICK', bg: 'bg-purple-500/10 border-purple-500/30 text-purple-400 hover:border-purple-500/60 hover:bg-purple-500/20' },
+  ];
+
+  return (
+    <motion.div
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative w-full max-w-5xl mx-auto mt-20 rounded-[2.5rem] overflow-hidden border border-neonOrange/20 bg-gradient-to-br from-[#0c0c0c] to-[#030303] shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(212,175,55,0.05)] hover:border-neonOrange/50 hover:shadow-[0_25px_60px_rgba(212,175,55,0.15)] transition-all duration-500 group"
+    >
+      {/* Sweeping Glare Overlay */}
+      <motion.div 
+        className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"
+        style={{ background: glareBackground }}
+      />
+
+      {/* Sweeping Light Reflection effect */}
+      <div className="absolute inset-0 w-[60%] bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-[30deg] -translate-x-[150%] group-hover:translate-x-[250%] transition-transform duration-[1500ms] ease-out pointer-events-none z-10" />
+
+      {/* Ambient Backlight Glow */}
+      <div className="absolute -left-20 -top-20 w-80 h-80 rounded-full bg-gradient-to-br from-[#D4AF37]/10 to-transparent blur-[100px] pointer-events-none z-0" />
+      <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-gradient-to-tr from-cyberOrange/5 to-transparent blur-[120px] pointer-events-none z-0" />
+
+      <div className="relative z-10 p-8 md:p-12 flex flex-col lg:flex-row gap-10 items-center justify-between">
+        
+        {/* Left Info Column */}
+        <div className="w-full lg:w-1/2 flex flex-col items-start text-left">
+          
+          {/* Badge */}
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-neonOrange/30 bg-neonOrange/5 text-neonOrange text-xs font-cyber tracking-widest uppercase mb-6 backdrop-blur-md select-none">
+            <Sparkles size={12} className="animate-pulse" />
+            <span>Interactive Hub</span>
+          </div>
+
+          {/* Heading */}
+          <h3 className="text-3xl md:text-4xl font-black font-cyber text-white leading-tight mb-4 uppercase">
+            CLASS WEEKLY TIMETABLE <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neonOrange via-yellow-100 to-white">
+              & MORE DETAILS ABOUT THE CLASS
+            </span>
+          </h3>
+
+          <p className="text-gray-400 text-sm md:text-base font-light mb-8 leading-relaxed">
+            Our training schedule is fully dynamic. Explore lesson syllabus details, filter eligibility age limits, and edit calendar slots directly in the dashboard.
+          </p>
+
+          {/* Features Checklist */}
+          <div className="space-y-3.5 w-full mb-8">
+            <motion.div 
+              whileHover={{ x: 6 }}
+              className="flex items-start gap-4 p-3 rounded-2xl border border-neonOrange/20 bg-neonOrange/10 backdrop-blur-md hover:border-neonOrange/50 hover:bg-neonOrange/15 shadow-[0_4px_20px_rgba(212,175,55,0.08)] hover:shadow-[0_4px_25px_rgba(212,175,55,0.15)] transition-all duration-300 cursor-pointer group/item"
+            >
+              <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-neonOrange/15 border border-neonOrange/30 text-neonOrange shrink-0 transition-all duration-300 group-hover/item:bg-neonOrange group-hover/item:text-black group-hover/item:shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                <Calendar size={16} />
+              </span>
+              <div>
+                <h4 className="text-sm font-cyber font-bold text-white tracking-wide group-hover/item:text-neonOrange transition-colors duration-300">Timetable Grid</h4>
+                <p className="text-xs text-gray-300 mt-1 leading-relaxed">Filter and view daily sessions, timings, and core modules.</p>
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              whileHover={{ x: 6 }}
+              className="flex items-start gap-4 p-3 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 backdrop-blur-md hover:border-cyan-500/50 hover:bg-cyan-500/15 shadow-[0_4px_20px_rgba(6,182,212,0.08)] hover:shadow-[0_4px_25px_rgba(6,182,212,0.15)] transition-all duration-300 cursor-pointer group/item"
+            >
+              <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 shrink-0 transition-all duration-300 group-hover/item:bg-cyan-500 group-hover/item:text-black group-hover/item:shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                <BookOpen size={16} />
+              </span>
+              <div>
+                <h4 className="text-sm font-cyber font-bold text-white tracking-wide group-hover/item:text-cyan-400 transition-colors duration-300">Detailed Specifications</h4>
+                <p className="text-xs text-gray-300 mt-1 leading-relaxed">Deep-dive into age ranges, syllabus topics, and lesson levels.</p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              whileHover={{ x: 6 }}
+              className="flex items-start gap-4 p-3 rounded-2xl border border-cyberOrange/20 bg-cyberOrange/10 backdrop-blur-md hover:border-cyberOrange/50 hover:bg-cyberOrange/15 shadow-[0_4px_20px_rgba(255,69,0,0.08)] hover:shadow-[0_4px_25px_rgba(255,69,0,0.15)] transition-all duration-300 cursor-pointer group/item"
+            >
+              <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-cyberOrange/15 border border-cyberOrange/30 text-cyberOrange shrink-0 transition-all duration-300 group-hover/item:bg-cyberOrange group-hover/item:text-black group-hover/item:shadow-[0_0_15px_rgba(255,69,0,0.4)]">
+                <Pencil size={16} />
+              </span>
+              <div>
+                <h4 className="text-sm font-cyber font-bold text-white tracking-wide group-hover/item:text-cyberOrange transition-colors duration-300">Dojo Customizer Mode</h4>
+                <p className="text-xs text-gray-300 mt-1 leading-relaxed">Admin controls to update the weekly schedule layout live.</p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Call To Action */}
+          <motion.a
+            href="#schedule"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="group/btn relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-neonOrange to-orange-500 text-black font-cyber font-black tracking-widest text-xs rounded-full flex items-center justify-center gap-3 overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.2)] hover:shadow-[0_0_40px_rgba(212,175,55,0.4)] transition-all duration-300"
+          >
+            {/* Slide background effect */}
+            <div className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-20 transition-opacity duration-300 pointer-events-none" />
+            
+            <span>PRESS THIS TO KNOW MORE</span>
+            <ChevronRight size={14} className="group-hover/btn:translate-x-1.5 transition-transform duration-300" />
+          </motion.a>
+        </div>
+
+        {/* Right Preview Grid Column */}
+        <div className="w-full lg:w-5/12 bg-black/40 border border-white/5 p-6 md:p-8 rounded-[2rem] relative overflow-hidden backdrop-blur-sm self-stretch flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-[10px] font-cyber font-bold tracking-[0.25em] text-neonOrange uppercase">Interactive Preview</span>
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neonOrange opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-neonOrange"></span>
+            </span>
+          </div>
+
+          {/* Mini Calendar Timetable Mockup */}
+          <div className="grid grid-cols-2 gap-3.5 my-auto">
+            {miniTimetable.map((slot, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+                className={`flex flex-col justify-between p-3.5 border rounded-2xl transition-all duration-300 select-none cursor-pointer ${slot.bg}`}
+              >
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-[10px] font-cyber tracking-widest text-white/50">{slot.day.toUpperCase()}</span>
+                  <Clock size={10} className="text-white/30" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-cyber font-black tracking-wider leading-tight text-white mb-0.5">{slot.name}</div>
+                  <div className="text-[9px] font-mono tracking-wide text-white/40">{slot.time}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center mt-6 text-[10px] font-cyber tracking-wider text-gray-500 select-none">
+            &larr; Click slots to view complete syllabus list &rarr;
+          </div>
+        </div>
+
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Programs() {
   return (
     <section id="programs" className="py-24 relative z-10">
@@ -332,54 +512,9 @@ export default function Programs() {
           ))}
         </div>
 
-        {/* Centered wide capsule button below the grid */}
-        <div className="flex justify-center mt-16 px-4">
-          <motion.a 
-             href="#schedule"
-             initial={{ opacity: 0, y: 30 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ duration: 0.8, ease: "easeOut" }}
-             whileHover={{ scale: 1.02, y: -2 }}
-             whileTap={{ scale: 0.98 }}
-             className="group relative w-full max-w-4xl px-12 py-5 md:py-6 border-2 border-neonOrange text-neonOrange hover:text-black rounded-full overflow-hidden transition-all duration-500 font-cyber tracking-[0.18em] text-xs md:text-sm font-black bg-transparent hover:shadow-[0_0_40px_rgba(255,110,0,0.4)] flex items-center justify-center gap-3 select-none text-center"
-          >
-            {/* Ambient Background Glow Backplate */}
-            <div className="absolute inset-0 rounded-full bg-neonOrange/20 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none -z-10" />
+        {/* Featured Interactive Timetable Showcase Card */}
+        <DojoPlannerShowcase />
 
-            {/* Sweeping Light Reflection / Glare Effect */}
-            <div className="absolute inset-0 w-[60%] bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-[30deg] -translate-x-[150%] group-hover:translate-x-[250%] transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-20" />
-
-            {/* Smooth Slide-up Background Fill */}
-            <div className="absolute inset-0 bg-neonOrange origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none" />
-
-            {/* Pulsing indicator light */}
-            <span className="relative flex h-2 w-2 shrink-0 group-hover:hidden transition-all duration-300">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neonOrange opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-neonOrange"></span>
-            </span>
-
-            {/* Roll-up Text Reveal */}
-            <span className="relative z-10 inline-flex overflow-hidden">
-              <span className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full">
-                PRESS HERE TO KNOW MORE AND THE WEEKLY SCHEDULE
-              </span>
-              <span className="absolute inset-0 translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 text-black">
-                PRESS HERE TO KNOW MORE AND THE WEEKLY SCHEDULE
-              </span>
-            </span>
-
-            {/* Roll-up Arrow Reveal with slide translation */}
-            <span className="relative z-10 inline-flex overflow-hidden w-4 h-4 items-center justify-center transform group-hover:translate-x-1.5 transition-transform duration-500 ease-out">
-              <span className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full text-sm">
-                &rarr;
-              </span>
-              <span className="absolute inset-0 translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 text-black text-sm">
-                &rarr;
-              </span>
-            </span>
-          </motion.a>
-        </div>
       </div>
     </section>
   );

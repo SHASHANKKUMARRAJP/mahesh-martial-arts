@@ -286,28 +286,40 @@ export default function SchedulePage() {
           </p>
         </div>
 
-        {/* Interactive Tabs */}
-        <div className="flex border-b border-white/10 mb-8 max-w-md gap-6 mx-auto md:mx-0">
+        {/* Interactive Tabs switcher */}
+        <div className="flex p-1 bg-[#090909]/95 border border-white/10 rounded-2xl mb-8 max-w-md mx-auto md:mx-0 relative z-10">
           <button
             onClick={() => setActiveTab('specs')}
-            className={`pb-4 text-sm font-cyber uppercase tracking-widest transition-all duration-300 relative ${
-              activeTab === 'specs' ? 'text-neonOrange' : 'text-gray-400 hover:text-white'
+            className={`flex-1 py-3 px-4 rounded-xl text-[11px] md:text-xs font-cyber uppercase tracking-widest font-black transition-all duration-300 relative z-10 ${
+              activeTab === 'specs' 
+                ? 'text-neonOrange' 
+                : 'text-gray-400 hover:text-white'
             }`}
           >
-            Module Specifications
+            <span className="relative z-20">Module Specifications</span>
             {activeTab === 'specs' && (
-              <motion.div layoutId="scheduleTabLine" className="absolute bottom-0 left-0 right-0 h-[2px] bg-neonOrange" />
+              <motion.div 
+                layoutId="activeScheduleTab" 
+                className="absolute inset-0 bg-[#121212] border border-neonOrange/20 rounded-xl shadow-[0_0_15px_rgba(212,175,55,0.1)] z-0" 
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
             )}
           </button>
           <button
             onClick={() => setActiveTab('grid')}
-            className={`pb-4 text-sm font-cyber uppercase tracking-widest transition-all duration-300 relative ${
-              activeTab === 'grid' ? 'text-neonOrange' : 'text-gray-400 hover:text-white'
+            className={`flex-1 py-3 px-4 rounded-xl text-[11px] md:text-xs font-cyber uppercase tracking-widest font-black transition-all duration-300 relative z-10 ${
+              activeTab === 'grid' 
+                ? 'text-neonOrange' 
+                : 'text-gray-400 hover:text-white'
             }`}
           >
-            Weekly Calendar Grid
+            <span className="relative z-20">Weekly Calendar Grid</span>
             {activeTab === 'grid' && (
-              <motion.div layoutId="scheduleTabLine" className="absolute bottom-0 left-0 right-0 h-[2px] bg-neonOrange" />
+              <motion.div 
+                layoutId="activeScheduleTab" 
+                className="absolute inset-0 bg-[#121212] border border-neonOrange/20 rounded-xl shadow-[0_0_15px_rgba(212,175,55,0.1)] z-0" 
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
             )}
           </button>
         </div>
@@ -321,7 +333,7 @@ export default function SchedulePage() {
             className="space-y-6"
           >
             {/* Edit Mode Toolbar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-black/40 border border-white/5 rounded-3xl p-4 backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#070707] border border-white/10 rounded-3xl p-4 shadow-xl backdrop-blur-md">
               <div className="flex items-center gap-3">
                 <p className="text-xs text-gray-400 font-light flex items-center gap-2 select-none">
                   <span>Swipe horizontally &rarr; to view the complete weekly timetable on mobile devices.</span>
@@ -393,10 +405,10 @@ export default function SchedulePage() {
               </div>
             </div>
             
-            <div className={`overflow-x-auto rounded-3xl border bg-black/60 shadow-2xl transition-all duration-500 ${isEditMode ? 'border-neonOrange/30 shadow-[0_0_40px_rgba(212,175,55,0.08)]' : 'border-white/10'}`}>
+            <div className={`overflow-x-auto rounded-[2rem] border bg-[#070707] shadow-2xl transition-all duration-500 ${isEditMode ? 'border-neonOrange/30 shadow-[0_0_40px_rgba(212,175,55,0.08)]' : 'border-white/10'}`}>
               <table className="w-full min-w-[900px] border-collapse text-left table-fixed">
                 <thead>
-                  <tr className="border-b border-white/15 bg-white/[0.02]">
+                  <tr className="border-b border-white/10 bg-black/40">
                     <th className="p-6 text-sm font-cyber font-bold tracking-widest text-white border-r border-white/10 w-[180px]">TIME</th>
                     {weekDays.map(day => (
                       <th key={day} className="p-6 text-xs md:text-sm font-cyber font-bold tracking-widest text-center text-neonOrange">{day.toUpperCase()}</th>
@@ -570,7 +582,7 @@ export default function SchedulePage() {
             {scheduleDetails.map((module) => (
               <div 
                 key={module.id} 
-                className="glass-card p-6 md:p-10 rounded-[2.5rem] border border-white/10 bg-[#0f0f0f]/40 relative overflow-hidden group shadow-2xl"
+                className="p-6 md:p-10 rounded-[2.5rem] border border-white/5 bg-[#070707] relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.85)]"
               >
                 {/* Ambient background decoration */}
                 <div className="absolute top-[-50px] right-[-50px] w-64 h-64 bg-neonOrange/5 rounded-full blur-[100px] pointer-events-none" />
@@ -591,24 +603,24 @@ export default function SchedulePage() {
                         Core Focus: <span className="text-white">{module.focus}</span>
                       </p>
                     </div>
-
+ 
                     {/* Stat Grid with custom Lucide Icons */}
                     <div className="grid grid-cols-2 gap-4 mt-auto">
-                      <div className="glass p-3 rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
+                      <div className="bg-black/60 p-3.5 rounded-2xl border border-white/5 hover:border-neonOrange/20 transition-all duration-300">
                         <div className="flex items-center gap-2 mb-1 text-neonOrange">
                           <Shield size={14} />
                           <span className="text-[10px] font-cyber tracking-wider uppercase font-bold">LEVEL</span>
                         </div>
                         <span className="text-[11px] md:text-xs text-gray-200 font-semibold leading-tight block">{module.level}</span>
                       </div>
-                      <div className="glass p-3 rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
+                      <div className="bg-black/60 p-3.5 rounded-2xl border border-white/5 hover:border-neonOrange/20 transition-all duration-300">
                         <div className="flex items-center gap-2 mb-1 text-neonOrange">
                           <User size={14} />
                           <span className="text-[10px] font-cyber tracking-wider uppercase font-bold">TRAINER</span>
                         </div>
                         <span className="text-xs md:text-sm text-gray-200 font-semibold">{module.trainer}</span>
                       </div>
-                      <div className="col-span-2 glass p-3 rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
+                      <div className="col-span-2 bg-black/60 p-3.5 rounded-2xl border border-white/5 hover:border-neonOrange/20 transition-all duration-300">
                         <div className="flex items-center gap-2 mb-1 text-neonOrange">
                           <Award size={14} />
                           <span className="text-[10px] font-cyber tracking-wider uppercase font-bold">AGE GROUP ELIGIBILITY</span>
