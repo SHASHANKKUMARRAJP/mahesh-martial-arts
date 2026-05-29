@@ -87,14 +87,22 @@ export default function Trainers() {
                       {t.stats}
                     </p>
                     {t.name === 'MAHESH SENSEI' && (
-                      <div>
-                        <a 
+                      <div className="relative inline-block self-start mt-2">
+                        {/* Soft pulsing glow behind the button */}
+                        <div className="absolute inset-0 rounded-full bg-neonOrange opacity-20 blur-[6px] animate-ping-slow pointer-events-none -z-10" />
+                        
+                        <motion.a 
                           href="#mahesh-sensei" 
-                          className="inline-flex items-center gap-3 text-sm font-cyber font-bold tracking-[0.2em] text-neonOrange hover:text-white transition-colors duration-300 group/link mt-2"
+                          whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(212,175,55,0.4)" }}
+                          whileTap={{ scale: 0.95 }}
+                          className="inline-flex items-center justify-center gap-3 px-6 py-3 border border-neonOrange/40 bg-neonOrange/5 text-neonOrange hover:bg-neonOrange hover:text-black rounded-full transition-all duration-300 font-cyber text-xs font-bold tracking-[0.2em] uppercase shadow-[0_0_15px_rgba(212,175,55,0.1)] group/btn relative overflow-hidden"
                         >
-                          <span>PRESS TO KNOW MORE</span>
-                          <span className="text-xl group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300">↗</span>
-                        </a>
+                          {/* Inner shimmer sweep */}
+                          <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-[30deg] animate-shimmer pointer-events-none" />
+                          
+                          <span className="relative z-10">PRESS TO KNOW MORE</span>
+                          <span className="text-sm relative z-10 transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform duration-300">↗</span>
+                        </motion.a>
                       </div>
                     )}
                   </div>

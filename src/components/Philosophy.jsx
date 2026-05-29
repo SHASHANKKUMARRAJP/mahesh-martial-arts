@@ -42,10 +42,11 @@ export default function Philosophy() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="group relative p-8 md:p-10 rounded-[2rem] border border-white/10 hover:border-neonOrange/30 bg-gradient-to-br from-[#0c0c0d] to-[#040404] hover:shadow-[0_0_40px_rgba(212,175,55,0.06)] transition-all duration-500 overflow-hidden"
+            className="group relative p-8 md:p-10 rounded-[2rem] border border-white/[0.08] hover:border-neonOrange/30 bg-gradient-to-br from-[#1a1205]/45 via-[#0c0903]/90 to-[#030303]/95 hover:shadow-[0_0_50px_rgba(212,175,55,0.12)] transition-all duration-500 overflow-hidden"
           >
             {/* Soft Ambient Glow Reflection Inside Card */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.01] to-white/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#D4AF37]/[0.01] to-[#D4AF37]/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="absolute -left-20 -top-20 w-56 h-56 rounded-full bg-[#D4AF37]/5 blur-[60px] pointer-events-none group-hover:bg-[#D4AF37]/10 transition-all duration-700" />
 
             {/* Massive Faded Background Icon */}
             <div className="absolute -right-24 -bottom-24 text-neonOrange opacity-[0.015] group-hover:opacity-[0.05] group-hover:scale-105 transition-all duration-700 pointer-events-none">
@@ -79,33 +80,34 @@ export default function Philosophy() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="group relative p-8 md:p-10 rounded-[2rem] border border-white/10 hover:border-neonOrange/30 bg-gradient-to-br from-[#0c0c0d] to-[#040404] hover:shadow-[0_0_40px_rgba(212,175,55,0.06)] transition-all duration-500 overflow-hidden"
+            className="group relative p-8 md:p-10 rounded-[2rem] border border-white/[0.08] hover:border-blue-500/30 bg-gradient-to-br from-[#0b1424]/45 via-[#050a12]/90 to-[#030303]/95 hover:shadow-[0_0_50px_rgba(59,130,246,0.12)] transition-all duration-500 overflow-hidden"
           >
             {/* Soft Ambient Glow Reflection Inside Card */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.01] to-white/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-blue-500/[0.01] to-blue-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="absolute -left-20 -top-20 w-56 h-56 rounded-full bg-blue-500/5 blur-[60px] pointer-events-none group-hover:bg-blue-500/10 transition-all duration-700" />
 
             {/* Massive Faded Background Icon */}
-            <div className="absolute -right-24 -bottom-24 text-neonOrange opacity-[0.015] group-hover:opacity-[0.05] group-hover:scale-105 transition-all duration-700 pointer-events-none">
+            <div className="absolute -right-24 -bottom-24 text-blue-500 opacity-[0.02] group-hover:opacity-[0.08] group-hover:scale-105 transition-all duration-700 pointer-events-none">
               <Brain strokeWidth={1} size={300} />
             </div>
             
             <div className="relative z-10 flex gap-5 md:gap-6">
               {/* Left Side: Icon */}
-              <div className="w-12 h-12 rounded-xl bg-neonOrange/5 border border-neonOrange/20 flex items-center justify-center text-neonOrange group-hover:scale-110 group-hover:bg-neonOrange/15 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.08)] shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-blue-500/5 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:bg-blue-500/15 transition-all duration-500 shadow-[0_0_15px_rgba(59,130,246,0.08)] shrink-0">
                 <Brain size={20} className="group-hover:-rotate-12 transition-transform duration-500" />
               </div>
               
               {/* Right Side: Title & Description */}
               <div className="flex-1 space-y-4">
-                <h3 className="text-xl md:text-2xl font-black font-cyber text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 group-hover:from-neonOrange group-hover:to-white tracking-wide leading-tight uppercase transition-all duration-500">
+                <h3 className="text-xl md:text-2xl font-black font-cyber text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 group-hover:from-blue-400 group-hover:to-white tracking-wide leading-tight uppercase transition-all duration-500">
                   CHESS & MIND GAMES
                 </h3>
                 <p className="text-gray-300 leading-relaxed font-light text-xs md:text-sm">
-                  A fighter without strategy is just a brawler. By integrating high-level <span className="text-neonOrange font-medium">chess strategy and tactics</span> into our training, we forge minds capable of seeing multiple steps ahead under intense pressure.
+                  A fighter without strategy is just a brawler. By integrating high-level <span className="text-blue-400 font-medium">chess strategy and tactics</span> into our training, we forge minds capable of seeing multiple steps ahead under intense pressure.
                 </p>
                 
                 {/* Decorative line that expands on hover */}
-                <div className="h-[2px] w-12 bg-white/10 mt-4 group-hover:w-full group-hover:bg-gradient-to-r group-hover:from-neonOrange group-hover:to-transparent transition-all duration-700 ease-out" />
+                <div className="h-[2px] w-12 bg-white/10 mt-4 group-hover:w-full group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-transparent transition-all duration-700 ease-out" />
               </div>
             </div>
           </motion.div>

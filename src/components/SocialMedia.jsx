@@ -132,23 +132,35 @@ export default function SocialMedia() {
           ))}
         </motion.div>
 
-        {/* Tip Indicator Card */}
-        <motion.div 
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-12 max-w-md mx-auto py-3.5 px-6 rounded-xl border border-neonOrange/40 bg-gradient-to-r from-neonOrange/15 to-yellow-600/5 flex items-center justify-center gap-3 text-center shadow-[0_10px_30px_rgba(212,175,55,0.15)] hover:border-neonOrange/60 transition-colors duration-300"
-        >
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neonOrange opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-neonOrange"></span>
-          </span>
-          <p className="text-xs md:text-sm font-cyber tracking-[0.12em] text-neonOrange uppercase font-black flex items-center gap-2">
-            Press the card to visit the official account <ArrowUp className="w-4 h-4 shrink-0 animate-bounce" />
-          </p>
+        {/* Tip Indicator Card turned into an interactive button */}
+        <div className="relative max-w-md mx-auto mt-12">
+          {/* Soft pulsing glow behind the indicator button */}
+          <div className="absolute inset-0 rounded-xl bg-neonOrange opacity-20 blur-[6px] animate-ping-slow pointer-events-none -z-10" />
 
-        </motion.div>
+          <motion.a 
+            href="https://www.instagram.com/_mahesh_martial_arts_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.04, y: -2, border: "1px solid rgba(212, 175, 55, 0.8)", boxShadow: "0 0 35px rgba(212,175,55,0.3)" }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ delay: 0.3 }}
+            className="w-full py-4 px-6 rounded-xl border border-neonOrange/40 bg-gradient-to-r from-neonOrange/20 via-yellow-600/5 to-black/40 flex items-center justify-center gap-3 text-center transition-all duration-300 cursor-pointer overflow-hidden relative group"
+          >
+            {/* Shimmer sweep effect */}
+            <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-[30deg] animate-shimmer pointer-events-none" />
+
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neonOrange opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-neonOrange"></span>
+            </span>
+            <p className="text-xs md:text-sm font-cyber tracking-[0.12em] text-neonOrange uppercase font-black flex items-center gap-2 relative z-10">
+              Press the above card to visit instagram official account <ArrowUp className="w-4 h-4 shrink-0 group-hover:-translate-y-1 transition-transform duration-300 animate-bounce" />
+            </p>
+          </motion.a>
+        </div>
       </div>
     </section>
   );

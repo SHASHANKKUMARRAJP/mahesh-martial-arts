@@ -112,24 +112,32 @@ export default function Contact() {
                     <div className="text-white text-sm md:text-base font-bold leading-relaxed mb-3">
                       Kalyna Jeweller Opp Maruthi Colony,<br/>Near Key Jeans Garment 3rd Floor, Ballari
                     </div>
-                    <a 
-                      href="https://www.google.com/maps/search/?api=1&query=Kalyna+Jeweller+Opp+Maruthi+Colony,+Near+Key+Jeans+Garment+3rd+Floor,+Ballari" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="group/map-btn inline-flex items-center justify-between p-2.5 rounded-lg border border-neonOrange/40 bg-neonOrange/10 hover:bg-neonOrange/20 hover:border-neonOrange/60 transition-all duration-300 gap-3 shadow-[0_4px_25px_rgba(212,175,55,0.12)] hover:shadow-[0_0_30px_rgba(212,175,55,0.25)] w-full max-w-[260px]"
-                    >
-                      <div className="text-left">
-                        <h4 className="text-[9px] font-cyber tracking-wider text-neonOrange uppercase font-black">
-                          OFFICIAL MAPS
-                        </h4>
-                        <p className="text-xs text-white font-semibold mt-0.5">
-                          Press this to Open Google Maps
-                        </p>
-                      </div>
-                      <div className="w-6 h-6 rounded-full border border-neonOrange/40 bg-neonOrange text-black font-black flex items-center justify-center text-xs group-hover/map-btn:scale-110 group-hover/map-btn:bg-white group-hover/map-btn:border-white transition-all duration-300 shrink-0">
-                        ↗
-                      </div>
-                    </a>
+                    <div className="relative inline-block mt-3 w-full max-w-[320px]">
+                      {/* Soft pulsing glow behind the Maps button */}
+                      <div className="absolute inset-0 rounded-lg bg-neonOrange opacity-15 blur-[6px] animate-ping-slow pointer-events-none -z-10" />
+
+                      <a 
+                        href="https://www.google.com/maps/search/?api=1&query=Kalyna+Jeweller+Opp+Maruthi+Colony,+Near+Key+Jeans+Garment+3rd+Floor,+Ballari" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group/map-btn relative overflow-hidden inline-flex items-center justify-between p-3.5 rounded-lg border border-neonOrange/40 bg-neonOrange/10 hover:bg-neonOrange/20 hover:border-neonOrange/60 transition-all duration-300 gap-3.5 shadow-[0_4px_25px_rgba(212,175,55,0.12)] hover:shadow-[0_0_30px_rgba(212,175,55,0.25)] w-full"
+                      >
+                        {/* Shimmer sweep effect */}
+                        <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-[30deg] animate-shimmer pointer-events-none" />
+
+                        <div className="text-left relative z-10">
+                          <h4 className="text-[10px] font-cyber tracking-wider text-neonOrange uppercase font-black">
+                            OFFICIAL MAPS
+                          </h4>
+                          <p className="text-sm md:text-base text-white font-bold mt-0.5">
+                            Press this to Open Google Maps
+                          </p>
+                        </div>
+                        <div className="w-8 h-8 rounded-full border border-neonOrange/40 bg-neonOrange text-black font-black flex items-center justify-center text-sm group-hover/map-btn:scale-110 group-hover/map-btn:bg-white group-hover/map-btn:border-white transition-all duration-300 shrink-0 relative z-10">
+                          ↗
+                        </div>
+                      </a>
+                    </div>
                   </div>
                 </div>
 

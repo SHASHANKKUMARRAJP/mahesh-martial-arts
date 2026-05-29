@@ -414,18 +414,28 @@ function DojoPlannerShowcase() {
           </div>
 
           {/* Call To Action */}
-          <motion.a
-            href="#schedule"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="group/btn relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-neonOrange to-orange-500 text-black font-cyber font-black tracking-widest text-xs rounded-full flex items-center justify-center gap-3 overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.2)] hover:shadow-[0_0_40px_rgba(212,175,55,0.4)] transition-all duration-300"
-          >
-            {/* Slide background effect */}
-            <div className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-20 transition-opacity duration-300 pointer-events-none" />
-            
-            <span>PRESS THIS TO KNOW MORE</span>
-            <ChevronRight size={14} className="group-hover/btn:translate-x-1.5 transition-transform duration-300" />
-          </motion.a>
+          <div className="relative w-full sm:w-auto">
+            {/* Pulsing glow aura waves behind the button */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-neonOrange to-orange-500 opacity-40 blur-[4px] animate-ping-slow pointer-events-none -z-10" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-neonOrange to-orange-500 opacity-20 blur-[8px] animate-ping-slow pointer-events-none -z-10 [animation-delay:1.25s]" />
+
+            <motion.a
+              href="#schedule"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group/btn relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-neonOrange to-orange-500 text-black font-cyber font-black tracking-widest text-xs rounded-full flex items-center justify-center gap-3 overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.25)] hover:shadow-[0_0_50px_rgba(255,69,0,0.65)] transition-all duration-300"
+            >
+              {/* Shimmer sweep effect */}
+              <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -skew-x-[30deg] animate-shimmer pointer-events-none" />
+
+              {/* Slide background effect */}
+              <div className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-20 transition-opacity duration-300 pointer-events-none" />
+              
+              <span className="relative z-10">PRESS THIS TO KNOW MORE</span>
+              <ChevronRight size={14} className="relative z-10 group-hover/btn:translate-x-1.5 transition-transform duration-300" />
+            </motion.a>
+          </div>
+
         </div>
 
         {/* Right Preview Grid Column */}
