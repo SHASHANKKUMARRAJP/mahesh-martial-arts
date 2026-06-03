@@ -515,16 +515,16 @@ export default function Programs() {
                 onClick={() => {
                   window.location.hash = '#specs';
                 }}
-                className="relative overflow-hidden px-5 py-3 rounded-xl border text-[10px] md:text-xs font-cyber font-black tracking-widest transition-all duration-300 text-center leading-tight shrink-0 hover:shadow-[0_0_25px_rgba(212,175,55,0.45)] border-neonOrange/40 bg-black/60 text-white hover:border-neonOrange/60 shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                className="relative overflow-hidden px-5 py-3 rounded-xl border border-transparent text-[10px] md:text-xs font-cyber font-black tracking-widest transition-all duration-300 text-center leading-tight shrink-0 shadow-[0_0_20px_rgba(212,175,55,0.25)] hover:shadow-[0_0_35px_rgba(255,69,0,0.65)] bg-gradient-to-r from-neonOrange to-orange-500 text-black"
               >
-                {/* Sliding backdrop fill on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-neonOrange/15 to-orange-500/15 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-out pointer-events-none" />
+                {/* Slide background brightness effect on hover */}
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none" />
 
                 {/* Shimmer sweep effect */}
-                <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-[30deg] animate-shimmer pointer-events-none" />
+                <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-[30deg] animate-shimmer pointer-events-none" />
                 
-                <span className="relative z-10 block group-hover/btn:text-neonOrange transition-colors duration-300">
-                  MODULE<br />SPECIFICATIONS
+                <span className="relative z-10 block transition-colors duration-300 text-black">
+                  PRESS THIS TO KNOW MORE
                 </span>
               </motion.button>
             </div>
