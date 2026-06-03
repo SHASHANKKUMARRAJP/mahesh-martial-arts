@@ -118,10 +118,10 @@ export default function SocialMedia() {
                   <h4 className="text-2xl font-cyber font-black tracking-wide text-white uppercase transition-colors duration-300 group-hover:text-[#E1306C]">
                     {social.name}
                   </h4>
-                  <p className="text-sm font-mono mt-1.5 font-bold text-neonOrange/95 group-hover:text-white transition-colors duration-300">{social.handle}</p>
+                  <p className="text-base font-mono mt-1.5 font-bold text-neonOrange/95 group-hover:text-white transition-colors duration-300">{social.handle}</p>
                 </div>
                 
-                <p className="text-xs text-gray-400 font-light leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
+                <p className="text-sm text-gray-400 font-light leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
                   {social.description}
                 </p>
 

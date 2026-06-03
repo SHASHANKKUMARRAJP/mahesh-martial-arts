@@ -1,6 +1,7 @@
-import React from 'react';
-import { motion, useMotionValue, useTransform, useMotionTemplate } from 'framer-motion';
-import { Calendar, Clock, BookOpen, Pencil, ChevronRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, useMotionValue, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
+import { Calendar, Clock, BookOpen, Pencil, ChevronRight, Sparkles, Shield, User, Award, Plus, Trash2, Save, RotateCcw, Lock, Loader2, AlertCircle, X } from 'lucide-react';
+import { fetchDojoData, saveDojoData, isSupabaseConfigured } from '../supabase';
 
 export const programs = [
   { 
@@ -333,7 +334,7 @@ function DojoPlannerShowcase() {
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full max-w-5xl mx-auto mt-20 rounded-[2.5rem] overflow-hidden border border-neonOrange/20 bg-gradient-to-br from-[#0c0c0c] to-[#030303] shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(212,175,55,0.05)] hover:border-neonOrange/50 hover:shadow-[0_25px_60px_rgba(212,175,55,0.15)] transition-all duration-500 group"
+      className="relative w-full max-w-5xl mx-auto mt-0 rounded-[2.5rem] overflow-hidden border border-neonOrange/20 bg-gradient-to-br from-[#0c0c0c] to-[#030303] shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(212,175,55,0.05)] hover:border-neonOrange/50 hover:shadow-[0_25px_60px_rgba(212,175,55,0.15)] transition-all duration-500 group"
     >
       {/* Sweeping Glare Overlay */}
       <motion.div 
@@ -360,11 +361,8 @@ function DojoPlannerShowcase() {
           </div>
 
           {/* Heading */}
-          <h3 className="text-3xl md:text-4xl font-black font-cyber text-white leading-tight mb-4 uppercase">
-            CLASS WEEKLY TIMETABLE <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neonOrange via-yellow-100 to-white">
-              & MORE DETAILS ABOUT THE CLASS
-            </span>
+          <h3 className="text-3xl md:text-4xl font-black font-cyber leading-tight mb-4 uppercase text-transparent bg-clip-text bg-gradient-to-r from-neonOrange via-yellow-100 to-white">
+            CLASS WEEKLY TIMETABLE
           </h3>
 
           <p className="text-gray-400 text-sm md:text-base font-light mb-8 leading-relaxed">
@@ -483,31 +481,62 @@ function DojoPlannerShowcase() {
 
 export default function Programs() {
   return (
-    <section id="programs" className="py-24 relative z-10">
+    <section id="programs" className="py-24 relative z-10 border-t border-white/5">
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16">
-          <div>
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="px-4 py-1 inline-block rounded-full border border-neonOrange/30 bg-neonOrange/5 text-neonOrange text-xs md:text-sm font-cyber tracking-widest mb-6 backdrop-blur-md"
-            >
-              CURRICULUM
-            </motion.div>
+        <div className="mb-16">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="px-4 py-1 inline-block rounded-full border border-neonOrange/30 bg-neonOrange/5 text-neonOrange text-xs md:text-sm font-cyber tracking-widest mb-6 backdrop-blur-md"
+          >
+            CURRICULUM
+          </motion.div>
+          
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
             <motion.h3 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-2xl md:text-4xl font-black font-cyber"
+              className="text-2xl md:text-4xl font-black font-cyber leading-tight"
             >
-              TRAINING <span className="text-gradient">MODULES</span> & <span className="text-gradient">WEEKLY SCHEDULE</span>
+              WHAT AND ALL WE <span className="text-gradient">TEACH IN CLASS</span>
             </motion.h3>
+
+            <div className="relative shrink-0 select-none group/btn w-fit">
+              {/* Pulsing glow aura waves behind the button */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-neonOrange to-orange-500 opacity-25 blur-[4px] animate-ping-slow pointer-events-none -z-10" />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-neonOrange to-orange-500 opacity-10 blur-[8px] animate-ping-slow pointer-events-none -z-10 [animation-delay:1.25s]" />
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  window.location.hash = '#specs';
+                }}
+                className="relative overflow-hidden px-5 py-3 rounded-xl border text-[10px] md:text-xs font-cyber font-black tracking-widest transition-all duration-300 text-center leading-tight shrink-0 hover:shadow-[0_0_25px_rgba(212,175,55,0.45)] border-neonOrange/40 bg-black/60 text-white hover:border-neonOrange/60 shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+              >
+                {/* Sliding backdrop fill on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-neonOrange/15 to-orange-500/15 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-out pointer-events-none" />
+
+                {/* Shimmer sweep effect */}
+                <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-[30deg] animate-shimmer pointer-events-none" />
+                
+                <span className="relative z-10 block group-hover/btn:text-neonOrange transition-colors duration-300">
+                  MODULE<br />SPECIFICATIONS
+                </span>
+              </motion.button>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 perspective-1000">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex flex-wrap justify-center gap-6 perspective-1000"
+        >
           {programs.map((prog, idx) => (
             <motion.div
               key={prog.id}
@@ -520,12 +549,514 @@ export default function Programs() {
               <ProgramCard prog={prog} />
             </motion.div>
           ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+export function WeeklySchedule() {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [addingCell, setAddingCell] = useState(null);
+  const [showAddRow, setShowAddRow] = useState(false);
+  const [newRowTime, setNewRowTime] = useState('');
+  const [saveFlash, setSaveFlash] = useState(false);
+
+  const [weekSchedule, setWeekSchedule] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(defaultWeekSchedule));
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('dojo_admin_auth') === 'true';
+  });
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [adminIdInput, setAdminIdInput] = useState('');
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isSavingCloud, setIsSavingCloud] = useState(false);
+
+  const getAdminCredentials = () => {
+    const savedId = localStorage.getItem('dojo_admin_id');
+    const savedPassword = localStorage.getItem('dojo_admin_password');
+    let savedEmail = localStorage.getItem('dojo_admin_email');
+    if (savedEmail === 'initiate@mahesh.dojo' || !savedEmail) {
+      savedEmail = 'maheshmartialarts66@gmail.com';
+      localStorage.setItem('dojo_admin_email', 'maheshmartialarts66@gmail.com');
+    }
+    const savedPhone = localStorage.getItem('dojo_admin_phone');
+    return {
+      adminId: savedId || 'admin',
+      adminPassword: savedPassword || 'maheshsensei',
+      adminEmail: savedEmail || 'maheshmartialarts66@gmail.com',
+      adminPhone: savedPhone || '917411421911'
+    };
+  };
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    setLoginError('');
+
+    const trimmedId = adminIdInput.trim().toLowerCase();
+    const password = adminPasswordInput;
+
+    const { adminId, adminPassword } = getAdminCredentials();
+
+    if (trimmedId === adminId.toLowerCase() && password === adminPassword) {
+      sessionStorage.setItem('dojo_admin_auth', 'true');
+      setIsAuthenticated(true);
+      setShowLoginModal(false);
+      setAdminIdInput('');
+      setAdminPasswordInput('');
+      setLoginError('');
+      setIsEditMode(true);
+    } else {
+      setLoginError('ACCESS DENIED: Invalid Credentials.');
+    }
+  };
+
+  React.useEffect(() => {
+    setIsAuthenticated(sessionStorage.getItem('dojo_admin_auth') === 'true');
+  }, []);
+
+  React.useEffect(() => {
+    const loadSchedule = async () => {
+      try {
+        const cloudData = await fetchDojoData('weekly_schedule');
+        if (cloudData) {
+          setWeekSchedule(cloudData);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+        }
+      } catch (err) {
+        console.warn('Failed to load schedule from Supabase:', err);
+      }
+    };
+    loadSchedule();
+  }, []);
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(weekSchedule));
+    } catch (e) {}
+  }, [weekSchedule]);
+
+  const saveScheduleToCloud = async (scheduleToSave) => {
+    if (isSupabaseConfigured) {
+      setIsSavingCloud(true);
+      try {
+        const success = await saveDojoData('weekly_schedule', scheduleToSave);
+        if (success) {
+          setSaveFlash(true);
+          setTimeout(() => setSaveFlash(false), 1200);
+        } else {
+          console.error("Failed to save schedule to Supabase.");
+        }
+      } catch (err) {
+        console.error("Supabase save failed:", err);
+      } finally {
+        setIsSavingCloud(false);
+      }
+    } else {
+      setSaveFlash(true);
+      setTimeout(() => setSaveFlash(false), 1200);
+    }
+  };
+
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && addingCell) {
+        setAddingCell(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [addingCell]);
+
+  const handleAddClass = React.useCallback((rowIdx, day, classOption) => {
+    setWeekSchedule(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      updated[rowIdx].classes[day] = { name: classOption.name, id: classOption.id, tag: classOption.tag };
+      return updated;
+    });
+    setAddingCell(null);
+  }, []);
+
+  const handleRemoveClass = React.useCallback((rowIdx, day) => {
+    setWeekSchedule(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      delete updated[rowIdx].classes[day];
+      return updated;
+    });
+  }, []);
+
+  const handleAddTimeRow = React.useCallback(() => {
+    if (!newRowTime.trim()) return;
+    setWeekSchedule(prev => [...prev, { time: newRowTime.trim(), classes: {} }]);
+    setNewRowTime('');
+    setShowAddRow(false);
+  }, [newRowTime]);
+
+  const handleRemoveRow = React.useCallback((rowIdx) => {
+    setWeekSchedule(prev => prev.filter((_, i) => i !== rowIdx));
+  }, []);
+
+  const handleTimeChange = React.useCallback((rowIdx, newTime) => {
+    setWeekSchedule(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      updated[rowIdx].time = newTime;
+      return updated;
+    });
+  }, []);
+
+  const handleResetSchedule = () => {
+    const defaultCopy = JSON.parse(JSON.stringify(defaultWeekSchedule));
+    setWeekSchedule(defaultCopy);
+    saveScheduleToCloud(defaultCopy);
+  };
+
+  const handleSaveAndExit = () => {
+    setIsEditMode(false);
+    saveScheduleToCloud(weekSchedule);
+  };
+
+  return (
+    <section id="weekly-schedule" className="py-24 relative z-10 bg-[#050505] border-t border-white/5">
+      <div className="container mx-auto px-4 relative z-10 max-w-7xl">
+        
+        {/* Page Title Header */}
+        <div className="mb-12 text-center md:text-left flex flex-col items-center md:items-start">
+          <div className="inline-block px-4 py-1 rounded-full bg-neonOrange text-black text-xs md:text-sm font-cyber font-bold tracking-[0.3em] uppercase mb-4 shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+            DOJO CALENDAR
+          </div>
+          <h2 className="text-4xl md:text-6xl font-black font-cyber text-white uppercase tracking-tight leading-tight mb-2">
+            CLASS WEEKLY <span className="text-gradient">TIMETABLE</span>
+          </h2>
+          <p className="text-gray-400 text-sm md:text-base font-light max-w-2xl mt-2">
+            Explore the comprehensive training calendar and details of our curriculum designed and taught directly by Master Mahesh Sensei.
+          </p>
         </div>
 
-        {/* Featured Interactive Timetable Showcase Card */}
-        <DojoPlannerShowcase />
+        {/* Weekly Calendar Grid */}
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="space-y-6"
+        >
+          {/* Edit Mode Toolbar */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#070707] border border-white/10 rounded-3xl p-4 shadow-xl backdrop-blur-md">
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-gray-400 font-light flex items-center gap-2 select-none">
+                <span>Swipe horizontally &rarr; to view the complete weekly timetable on mobile devices.</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              {/* Save/Sync flash indicator */}
+              <AnimatePresence>
+                {isSavingCloud ? (
+                  <div className="text-xs font-cyber text-neonOrange tracking-widest uppercase flex items-center gap-1.5 select-none">
+                    <Loader2 className="w-3 h-3 animate-spin text-neonOrange" />
+                    Syncing...
+                  </div>
+                ) : saveFlash ? (
+                  <motion.div 
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    className="text-xs font-cyber text-emerald-400 tracking-widest uppercase flex items-center gap-1.5"
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Saved & Synced
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
 
+              {isEditMode && (
+                <>
+                  <button
+                    onClick={handleResetSchedule}
+                    className="px-3 py-1.5 rounded-full border border-white/10 hover:border-red-500/40 text-gray-400 hover:text-red-400 text-[10px] font-cyber tracking-widest uppercase transition-all duration-300 flex items-center gap-1.5"
+                    title="Reset to default schedule"
+                  >
+                    <RotateCcw size={12} />
+                    Reset
+                  </button>
+                  <button
+                    onClick={handleSaveAndExit}
+                    className="px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-400 text-[10px] font-cyber tracking-widest uppercase transition-all duration-300 flex items-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                  >
+                    <Save size={12} />
+                    Done
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    setShowLoginModal(true);
+                  } else {
+                    if (isEditMode) {
+                      handleSaveAndExit();
+                    } else {
+                      setIsEditMode(true);
+                      setAddingCell(null);
+                      setShowAddRow(false);
+                    }
+                  }
+                }}
+                className={`px-4 py-1.5 rounded-full border text-[10px] font-cyber tracking-widest uppercase transition-all duration-300 flex items-center gap-1.5 ${
+                  isEditMode 
+                    ? 'bg-neonOrange/15 border-neonOrange/40 text-neonOrange shadow-[0_0_20px_rgba(212,175,55,0.15)]' 
+                    : 'border-white/10 hover:border-neonOrange/30 text-gray-400 hover:text-neonOrange'
+                }`}
+              >
+                <Pencil size={12} />
+                {isEditMode ? 'Editing' : 'Edit Schedule'}
+              </button>
+            </div>
+          </div>
+          
+          <div className={`overflow-x-auto rounded-[2rem] border bg-[#070707] shadow-2xl transition-all duration-500 ${isEditMode ? 'border-neonOrange/30 shadow-[0_0_40px_rgba(212,175,55,0.08)]' : 'border-white/10'}`}>
+            <table className="w-full min-w-[900px] border-collapse text-left table-fixed">
+              <thead>
+                <tr className="border-b border-white/10 bg-black/40">
+                  <th className="p-6 text-sm font-cyber font-bold tracking-widest text-white border-r border-white/10 w-[180px]">TIME</th>
+                  {weekDays.map(day => (
+                    <th key={day} className="p-6 text-xs md:text-sm font-cyber font-bold tracking-widest text-center text-neonOrange">{day.toUpperCase()}</th>
+                  ))}
+                  {isEditMode && <th className="p-4 w-[50px]"></th>}
+                </tr>
+              </thead>
+              <tbody>
+                {weekSchedule.map((row, rowIdx) => (
+                  <tr key={rowIdx} className="border-b border-white/5 hover:bg-white/[0.01] transition-colors duration-300">
+                    <td className="p-6 text-xs md:text-sm font-cyber font-medium text-gray-300 border-r border-white/10 bg-white/[0.01]">
+                      <div className="flex items-center gap-2">
+                        <Clock size={14} className="text-neonOrange shrink-0" />
+                        {isEditMode ? (
+                          <input 
+                            type="text" 
+                            value={row.time} 
+                            onChange={(e) => handleTimeChange(rowIdx, e.target.value)}
+                            className="bg-transparent border-b border-neonOrange/30 focus:border-neonOrange outline-none text-white w-full py-0.5 tracking-wider font-cyber"
+                          />
+                        ) : (
+                          <span>{row.time}</span>
+                        )}
+                      </div>
+                    </td>
+                    {weekDays.map(day => {
+                      const classInfo = row.classes[day];
+                      const isCellAdding = addingCell && addingCell.rowIdx === rowIdx && addingCell.day === day;
+                      return (
+                        <td key={day} className="p-4 text-center align-middle h-24 relative">
+                          {classInfo ? (
+                            <div className="absolute inset-2 glass rounded-2xl p-3 flex flex-col justify-center items-center border border-neonOrange/20 bg-gradient-to-br from-neonOrange/10 to-transparent hover:border-neonOrange hover:shadow-[0_0_20px_rgba(212,175,55,0.15)] transition-all duration-300 select-none">
+                              <span className="text-[10px] font-cyber text-neonOrange tracking-[0.2em] mb-1">
+                                MODULE {classInfo.id}
+                              </span>
+                              <span className="text-xs font-black font-cyber text-white tracking-wide leading-tight">
+                                {classInfo.tag}
+                              </span>
+                              {isEditMode && (
+                                <button
+                                  onClick={() => handleRemoveClass(rowIdx, day)}
+                                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 hover:bg-red-500/40 hover:text-white transition-all duration-200 z-10"
+                                  title="Remove this class"
+                                >
+                                  <X size={10} />
+                                </button>
+                              )}
+                            </div>
+                          ) : isEditMode ? (
+                            <div className="absolute inset-2 flex items-center justify-center">
+                              {isCellAdding ? (
+                                <motion.div 
+                                  initial={{ opacity: 0, scale: 0.9, y: -5 }}
+                                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-52 bg-[#111111] border border-neonOrange/40 rounded-2xl p-3 flex flex-col gap-1 shadow-[0_20px_60px_rgba(0,0,0,0.95),0_0_30px_rgba(212,175,55,0.15)] backdrop-blur-xl"
+                                >
+                                  <div className="text-[10px] font-cyber text-neonOrange/60 tracking-[0.3em] uppercase text-center mb-1 pb-2 border-b border-white/10">Select Class</div>
+                                  {availableClasses.map(cls => (
+                                    <button
+                                      key={cls.id}
+                                      onClick={() => handleAddClass(rowIdx, day, cls)}
+                                      className="px-4 py-2.5 text-sm font-cyber text-gray-200 hover:text-neonOrange hover:bg-neonOrange/10 rounded-xl transition-all duration-200 text-left tracking-wider uppercase flex items-center gap-3"
+                                    >
+                                      <span className="w-6 h-6 rounded-lg bg-neonOrange/10 border border-neonOrange/20 text-neonOrange text-[9px] font-bold flex items-center justify-center shrink-0">{cls.id}</span>
+                                      {cls.tag}
+                                    </button>
+                                  ))}
+                                  <button
+                                    onClick={() => setAddingCell(null)}
+                                    className="px-4 py-2 text-xs font-cyber text-gray-500 hover:text-red-400 rounded-xl transition-all duration-200 text-center tracking-wider uppercase mt-1 border-t border-white/5 pt-2.5"
+                                  >
+                                    Cancel
+                                  </button>
+                                </motion.div>
+                              ) : (
+                                <button
+                                  onClick={() => setAddingCell({ rowIdx, day })}
+                                  className="w-8 h-8 rounded-full border border-dashed border-white/10 hover:border-neonOrange/40 flex items-center justify-center text-white/10 hover:text-neonOrange/60 transition-all duration-300 hover:bg-neonOrange/5"
+                                  title="Add a class here"
+                                >
+                                  <Plus size={14} />
+                                </button>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-[10px] font-cyber text-white/5 font-black uppercase tracking-[0.3em] select-none">CLOSED</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                    {isEditMode && (
+                      <td className="p-2 text-center align-middle">
+                        <button
+                          onClick={() => handleRemoveRow(rowIdx)}
+                          className="w-7 h-7 rounded-full border border-white/5 hover:border-red-500/40 flex items-center justify-center text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-all duration-300"
+                          title="Delete this time row"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {isEditMode && (
+            <div className="flex items-center justify-center gap-3 pt-2">
+              {showAddRow ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-3 bg-[#0c0c0c] border border-neonOrange/20 rounded-full px-4 py-2 shadow-lg"
+                >
+                  <Clock size={14} className="text-neonOrange shrink-0" />
+                  <input
+                    type="text"
+                    value={newRowTime}
+                    onChange={e => setNewRowTime(e.target.value)}
+                    placeholder="e.g. 08:00 AM - 09:00 AM"
+                    className="bg-transparent text-sm font-cyber text-white placeholder-gray-500 outline-none w-56 tracking-wider"
+                    onKeyDown={e => e.key === 'Enter' && handleAddTimeRow()}
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleAddTimeRow}
+                    disabled={!newRowTime.trim()}
+                    className="px-3 py-1 rounded-full bg-neonOrange/10 border border-neonOrange/30 text-neonOrange text-[10px] font-cyber tracking-widest uppercase hover:bg-neonOrange/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    Add
+                  </button>
+                  <button
+                    onClick={() => { setShowAddRow(false); setNewRowTime(''); }}
+                    className="text-gray-500 hover:text-red-400 transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                </motion.div>
+              ) : (
+                <button
+                  onClick={() => setShowAddRow(true)}
+                  className="px-5 py-2 rounded-full border border-dashed border-white/10 hover:border-neonOrange/30 text-gray-400 hover:text-neonOrange text-[10px] font-cyber tracking-widest uppercase transition-all duration-300 flex items-center gap-2 hover:bg-neonOrange/5"
+                >
+                  <Plus size={12} />
+                  Add New Time Slot
+                </button>
+              )}
+            </div>
+          )}
+
+          <div className="text-center mt-6">
+            <p className="text-xs text-gray-400 font-light italic">All modules are conducted under the personalized supervision of Master Mahesh Sensei.</p>
+          </div>
+        </motion.div>
       </div>
+
+      <AnimatePresence>
+        {showLoginModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-md bg-[#090909] border border-neonOrange/20 p-8 rounded-2xl shadow-[0_0_50px_rgba(255,110,0,0.15)] relative overflow-hidden text-left"
+            >
+              <button
+                onClick={() => {
+                  setShowLoginModal(false);
+                  setLoginError('');
+                  setAdminIdInput('');
+                  setAdminPasswordInput('');
+                }}
+                className="absolute top-4 right-4 text-gray-400 hover:text-neonOrange transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-6 pt-2">
+                <div className="text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto text-red-500">
+                    <Lock className="w-6 h-6 animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-cyber font-bold text-white tracking-widest uppercase">ADMIN ACCESS REQUIRED</h3>
+                    <p className="text-[10px] text-neonOrange/85 font-cyber tracking-wider uppercase mt-0.5">Secure Schedule Customization</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleAdminLogin} className="space-y-4">
+                  {loginError && (
+                    <div className="p-3 rounded-lg bg-red-950/40 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{loginError}</span>
+                    </div>
+                  )}
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-cyber tracking-widest uppercase text-gray-400">Admin ID</label>
+                    <input
+                      type="text"
+                      required
+                      value={adminIdInput}
+                      onChange={(e) => setAdminIdInput(e.target.value)}
+                      placeholder="Enter admin ID"
+                      className="w-full bg-[#020202] border border-neonOrange/15 rounded-xl px-4 py-3 text-sm text-[#ffe28a] placeholder-gray-600 focus:outline-none focus:border-neonOrange/50 focus:text-white transition-all duration-300 font-sans"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-cyber tracking-widest uppercase text-gray-400">Password</label>
+                    <input
+                      type="password"
+                      required
+                      value={adminPasswordInput}
+                      onChange={(e) => setAdminPasswordInput(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full bg-[#020202] border border-neonOrange/15 rounded-xl px-4 py-3 text-sm text-[#ffe28a] placeholder-gray-600 focus:outline-none focus:border-neonOrange/50 focus:text-white transition-all duration-300 font-sans"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-gradient-to-r from-neonOrange to-orange-600 hover:brightness-110 text-black font-cyber font-bold tracking-widest rounded-xl transition-all duration-300 text-xs shadow-[0_0_20px_rgba(255,110,0,0.2)] uppercase"
+                  >
+                    AUTHENTICATE
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

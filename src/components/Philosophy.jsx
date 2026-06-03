@@ -65,7 +65,7 @@ export default function Philosophy() {
                   PHYSICAL CONDITIONING
                 </h3>
                 <p className="text-gray-300 leading-relaxed font-light text-xs md:text-sm">
-                  True strength is not just muscular; it is <span className="text-neonOrange font-medium">kinetic intelligence</span>. Our advanced karate and stick rotation modules are designed to build an unbreakable physical foundation, hyper-responsive reflexes, and perfect spatial awareness.
+                  True strength isn't just about building muscles—it's about <span className="text-neonOrange font-medium">moving smart</span>. Our advanced karate and stick training are built to help you get strong, react lightning-fast, and gain total control over your body.
                 </p>
                 
                 {/* Decorative line that expands on hover */}

@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Philosophy from './components/Philosophy';
 import About from './components/About';
-import Programs from './components/Programs';
+import Programs, { WeeklySchedule } from './components/Programs';
 import CurriculumTimeline from './components/CurriculumTimeline';
 import Trainers from './components/Trainers';
 import SocialMedia from './components/SocialMedia';
@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 import SenseiPage from './components/SenseiPage';
 import GalleryPage from './components/GalleryPage';
 import SchedulePage from './components/SchedulePage';
+import SpecsPage from './components/SpecsPage';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -56,6 +57,10 @@ function App() {
     return <SchedulePage />;
   }
 
+  if (currentHash === '#specs') {
+    return <SpecsPage />;
+  }
+
   return (
     <div className="relative min-h-screen bg-[#000000] text-white overflow-hidden selection:bg-neonOrange selection:text-black">
       
@@ -92,6 +97,7 @@ function App() {
         <Philosophy />
         <About />
         <Programs />
+        <WeeklySchedule />
         <CurriculumTimeline />
         <Trainers />
         <SocialMedia />

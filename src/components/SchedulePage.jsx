@@ -13,7 +13,7 @@ export default function SchedulePage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const [activeTab, setActiveTab] = useState('specs'); // 'specs' or 'grid'
+  // Module specifications have been moved to the home page beside the Programs section
   const [isEditMode, setIsEditMode] = useState(false);
   const [addingCell, setAddingCell] = useState(null); // { rowIdx, day } for the currently-open dropdown
   const [showAddRow, setShowAddRow] = useState(false);
@@ -286,52 +286,13 @@ export default function SchedulePage() {
           </p>
         </div>
 
-        {/* Interactive Tabs switcher */}
-        <div className="flex p-1 bg-[#090909]/95 border border-white/10 rounded-2xl mb-8 max-w-md mx-auto md:mx-0 relative z-10">
-          <button
-            onClick={() => setActiveTab('specs')}
-            className={`flex-1 py-3 px-4 rounded-xl text-[11px] md:text-xs font-cyber uppercase tracking-widest font-black transition-all duration-300 relative z-10 ${
-              activeTab === 'specs' 
-                ? 'text-neonOrange' 
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            <span className="relative z-20">Module Specifications</span>
-            {activeTab === 'specs' && (
-              <motion.div 
-                layoutId="activeScheduleTab" 
-                className="absolute inset-0 bg-[#121212] border border-neonOrange/20 rounded-xl shadow-[0_0_15px_rgba(212,175,55,0.1)] z-0" 
-                transition={{ type: "spring", stiffness: 380, damping: 30 }}
-              />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('grid')}
-            className={`flex-1 py-3 px-4 rounded-xl text-[11px] md:text-xs font-cyber uppercase tracking-widest font-black transition-all duration-300 relative z-10 ${
-              activeTab === 'grid' 
-                ? 'text-neonOrange' 
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            <span className="relative z-20">Weekly Calendar Grid</span>
-            {activeTab === 'grid' && (
-              <motion.div 
-                layoutId="activeScheduleTab" 
-                className="absolute inset-0 bg-[#121212] border border-neonOrange/20 rounded-xl shadow-[0_0_15px_rgba(212,175,55,0.1)] z-0" 
-                transition={{ type: "spring", stiffness: 380, damping: 30 }}
-              />
-            )}
-          </button>
-        </div>
-
-        {/* Tab Content 1: Weekly Calendar Grid */}
-        {activeTab === 'grid' && (
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
+        {/* Weekly Calendar Grid */}
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="space-y-6"
+        >
             {/* Edit Mode Toolbar */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#070707] border border-white/10 rounded-3xl p-4 shadow-xl backdrop-blur-md">
               <div className="flex items-center gap-3">
@@ -569,94 +530,6 @@ export default function SchedulePage() {
               <p className="text-xs text-gray-400 font-light italic">All modules are conducted under the personalized supervision of Master Mahesh Sensei.</p>
             </div>
           </motion.div>
-        )}
-
-        {/* Tab Content 2: Module Specifications Detail Cards */}
-        {activeTab === 'specs' && (
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-12"
-          >
-            {scheduleDetails.map((module) => (
-              <div 
-                key={module.id} 
-                className="p-6 md:p-10 rounded-[2.5rem] border border-white/5 bg-[#070707] relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.85)]"
-              >
-                {/* Ambient background decoration */}
-                <div className="absolute top-[-50px] right-[-50px] w-64 h-64 bg-neonOrange/5 rounded-full blur-[100px] pointer-events-none" />
-                
-                <div className="flex flex-col lg:flex-row gap-8 items-stretch relative z-10">
-                  {/* Left Column: Metadata & Core Parameters */}
-                  <div className="w-full lg:w-5/12 border-b lg:border-b-0 lg:border-r border-white/10 pb-6 lg:pb-0 lg:pr-8 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-4 mb-4">
-                        <span className="text-2xl font-cyber font-black px-4 py-1 rounded-2xl bg-neonOrange/10 border border-neonOrange/30 text-neonOrange">
-                          {module.id}
-                        </span>
-                        <h3 className="text-2xl md:text-3xl font-cyber font-bold text-white tracking-wide">
-                          {module.name}
-                        </h3>
-                      </div>
-                      <p className="text-xs text-gray-400 font-cyber uppercase tracking-[0.22em] border-l-2 border-neonOrange pl-3 leading-relaxed mb-6">
-                        Core Focus: <span className="text-white">{module.focus}</span>
-                      </p>
-                    </div>
- 
-                    {/* Stat Grid with custom Lucide Icons */}
-                    <div className="grid grid-cols-2 gap-4 mt-auto">
-                      <div className="bg-black/60 p-3.5 rounded-2xl border border-white/5 hover:border-neonOrange/20 transition-all duration-300">
-                        <div className="flex items-center gap-2 mb-1 text-neonOrange">
-                          <Shield size={14} />
-                          <span className="text-[10px] font-cyber tracking-wider uppercase font-bold">LEVEL</span>
-                        </div>
-                        <span className="text-[11px] md:text-xs text-gray-200 font-semibold leading-tight block">{module.level}</span>
-                      </div>
-                      <div className="bg-black/60 p-3.5 rounded-2xl border border-white/5 hover:border-neonOrange/20 transition-all duration-300">
-                        <div className="flex items-center gap-2 mb-1 text-neonOrange">
-                          <User size={14} />
-                          <span className="text-[10px] font-cyber tracking-wider uppercase font-bold">TRAINER</span>
-                        </div>
-                        <span className="text-xs md:text-sm text-gray-200 font-semibold">{module.trainer}</span>
-                      </div>
-                      <div className="col-span-2 bg-black/60 p-3.5 rounded-2xl border border-white/5 hover:border-neonOrange/20 transition-all duration-300">
-                        <div className="flex items-center gap-2 mb-1 text-neonOrange">
-                          <Award size={14} />
-                          <span className="text-[10px] font-cyber tracking-wider uppercase font-bold">AGE GROUP ELIGIBILITY</span>
-                        </div>
-                        <span className="text-xs md:text-sm text-gray-200 font-semibold">{module.age}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Complete Syllabus Curriculum */}
-                  <div className="w-full lg:w-7/12 lg:pl-8 flex flex-col justify-center">
-                    <div className="flex items-center gap-3 mb-6">
-                      <BookOpen size={16} className="text-neonOrange" />
-                      <h4 className="text-xs font-cyber tracking-[0.2em] text-white uppercase font-black">
-                        CURRICULUM SYLLABUS & TOPICS
-                      </h4>
-                    </div>
-                    
-                    <ul className="space-y-4">
-                      {module.syllabus.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-4">
-                          <span className="w-6 h-6 rounded-lg bg-neonOrange/15 border border-neonOrange/30 text-neonOrange text-[10px] font-cyber flex items-center justify-center shrink-0 mt-0.5">
-                            0{idx + 1}
-                          </span>
-                          <span className="text-gray-300 text-sm md:text-base font-light leading-relaxed">
-                            {item}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-        )}
 
         {/* Footer Return Button */}
         <div className="flex justify-center mt-16 border-t border-white/5 pt-12">
